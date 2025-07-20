@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registrando CanchasUNA</title>
+</head>
+<body>
+
+    <h1>Hola Ingresa tus datos requeridos</h1>
+
+    <h2>Registrarse</h2>
+
+
+    <form method="POST" action="{% url 'crear_persona' %}">
+        {% csrf_token %}
+        {{ formulario.as_p }}
+        <button type="submit">Registrar</button>
+    </form>
+
+    <form action="{% url 'inicio' %}" method="get">
+        <button type="submit">Regresar</button>
+    </form>
+    
+</body>
+</html>
