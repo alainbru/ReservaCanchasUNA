@@ -71,7 +71,7 @@ def vista_reservas(request):
     canchas = ['cancha 1', 'cancha 2'] if deporte != 'futbol' else ['']
     reservas = Reserva.objects.filter(deporte=deporte)
 
-    return render(request, 'clientes/reservas.html', {
+    return render(request, 'ReservaCanchasUNA/reservas.html', {
         'dias': dias,
         'horas': horas,
         'canchas': canchas,
