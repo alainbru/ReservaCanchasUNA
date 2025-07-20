@@ -1,3 +1,4 @@
+{% load crispy_forms_tags %}
 
 <!DOCTYPE html>
 <html lang="en">
@@ -8,7 +9,12 @@
 </head>
 <body>
 
-    <h1>Bienvenido Pagina del estudiante</h1>
+    <h1>Bienvenido a la página del estudiante</h1>
+
+    <a href="{% url 'estudiante:estudiante_reservas' %}" 
+    class="btn btn-primary">Ver Reservas
+    </a>
+
     
 </body>
 </html>

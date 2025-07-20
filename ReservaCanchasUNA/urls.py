@@ -35,5 +35,6 @@ urlpatterns = [
     path('coordinador/', include('coordinador.urls',namespace='coordinador')), 
 
     ######faltaria solucionar bien esa
-    path('reservas/', views.vista_reservas, name='vista_reservas'),
+    #path('reservas/', views.vista_reservas, name='vista_reservas'),
+
 ]
