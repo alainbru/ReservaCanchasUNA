@@ -7,7 +7,9 @@ from django.shortcuts import render
 from .models import Persona
 from django.http import HttpResponse
 
-
+from django.http import HttpResponse
+from django.shortcuts import render, redirect
+from .models import Reserva
 
 #---------------------------------------pagina por defecto---------------------------------------
 def Index(request):
@@ -48,3 +50,31 @@ def crear_persona(request):
 def listar_personas(request):
     return render(request, "ReservaCanchasUNA/lista_personas.html",{"personas":models.Persona.objects.all()})
     
+#'''---------------------------------------para reservas---------------------------------------
+def vista_reservas(request):
+    deporte = request.GET.get('deporte', 'futbol')  # por defecto muestra fútbol
+
+    if request.method == 'POST':
+        reserva_id = request.POST.get('id_reserva')
+        reserva = Reserva.objects.get(id=reserva_id)
+        reserva.disponible = False
+        reserva.save()
+        return redirect(f"{request.path}?deporte={deporte}")  # mantiene el deporte seleccionado
+
+    dias = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes']
+    horas = [
+        "7:00-8:00", "8:00-9:00", "9:00-10:00", "10:00-11:00",
+        "11:00-12:00", "12:00-13:00", "13:00-14:00", "14:00-15:00",
+        "15:00-16:00", "16:00-17:00", "17:00-18:00", "18:00-19:00", "19:00-20:00"
+    ]
+
+    canchas = ['cancha 1', 'cancha 2'] if deporte != 'futbol' else ['']
+    reservas = Reserva.objects.filter(deporte=deporte)
+
+    return render(request, 'clientes/reservas.html', {
+        'dias': dias,
+        'horas': horas,
+        'canchas': canchas,
+        'reservas': reservas,
+        'deporte': deporte,
+    })

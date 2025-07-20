@@ -9,3 +9,10 @@ class Formulario_Persona(forms.Form):
     codigo = forms.CharField(max_length=100, required=False, label="Código")
     contrasena = forms.CharField(max_length=100, widget=forms.PasswordInput, required=False, label="Contraseña")
     rol = forms.CharField(max_length=100, required=False, label="Rol")
+
+from .models import Reserva
+
+class ReservaForm(forms.ModelForm):
+    class Meta:
+        model = Reserva
+        fields = ['dia', 'hora', 'disponible']

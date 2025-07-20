@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Reservas</title>
+</head>
+<body>
+    <h1>Lista de reservas</h1>
+
+    <form method="get" action="">
+        <label for="deporte">Selecciona deporte:</label>
+        <select name="deporte" id="deporte" onchange="this.form.submit()">
+            <option value="voley" {% if deporte == 'voley' %}selected{% endif %}>Vóley</option>
+            <option value="basquet" {% if deporte == 'basquet' %}selected{% endif %}>Básquet</option>
+            <option value="futsal" {% if deporte == 'futsal' %}selected{% endif %}>Futsal</option>
+            <option value="futbol" {% if deporte == 'futbol' %}selected{% endif %}>Fútbol</option>
+        </select>
+    </form>
+
+    <br>
+
+    <table border="1">
+        <tr>
+            <th rowspan="{% if deporte == 'futbol' %}1{% else %}2{% endif %}">Hora</th>
+            {% for dia in dias %}
+                {% if deporte == 'futbol' %}
+                    <th>{{ dia }}</th>
+                {% else %}
+                    <th colspan="2">{{ dia }}</th>
+                {% endif %}
+            {% endfor %}
+        </tr>
+
+        {% if deporte != 'futbol' %}
+        <tr>
+            {% for dia in dias %}
+                <th>Cancha 1</th>
+                <th>Cancha 2</th>
+            {% endfor %}
+        </tr>
+        {% endif %}
+
+        {% for hora in horas %}
+        <tr>
+            <td>{{ hora }}</td>
+            {% for dia in dias %}
+                {% if deporte == 'futbol' %}
+                    <td>
+                        {% for reserva in reservas %}
+                            {% if reserva.dia == dia and reserva.hora == hora %}
+                                {% if reserva.disponible %}
+                                    <form method="post">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="id_reserva" value="{{ reserva.id }}">
+                                        <button type="submit">Reservar</button>
+                                    </form>
+                                {% else %}
+                                    No disponible
+                                {% endif %}
+                            {% endif %}
+                        {% endfor %}
+                    </td>
+                {% else %}
+                    {% for cancha in canchas %}
+                        <td>
+                            {% for reserva in reservas %}
+                                {% if reserva.dia == dia and reserva.hora == hora and reserva.cancha == cancha %}
+                                    {% if reserva.disponible %}
+                                        <form method="post">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="id_reserva" value="{{ reserva.id }}">
+                                            <button type="submit">Reservar</button>
+                                        </form>
+                                    {% else %}
+                                        No disponible
+                                    {% endif %}
+                                {% endif %}
+                            {% endfor %}
+                        </td>
+                    {% endfor %}
+                {% endif %}
+            {% endfor %}
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>
