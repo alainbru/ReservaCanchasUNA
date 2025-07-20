@@ -44,6 +44,11 @@ INSTALLED_APPS = [
     'ReservaCanchasUNA',  # Ensure your app is listed here
      'crispy_forms',
          'crispy_bootstrap5',  
+         
+    ##Los nuevos modulos que se añadio
+    'administrador'
+    'coordinador'
+    'estudiante'
 ]
 
 MIDDLEWARE = [
