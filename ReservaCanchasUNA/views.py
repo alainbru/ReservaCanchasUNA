@@ -4,10 +4,12 @@ from . import forms, models
 from ReservaCanchasUNA import views
 from .models import Persona
 from django.shortcuts import render
-from .models import Persona
 from django.http import HttpResponse
 
+#---------------------------------------Pagina inicio---------------------------------------
 
+def inicio(request):
+    return render(request, 'ReservaCanchasUNA/inicio.html')
 
 #---------------------------------------pagina por defecto---------------------------------------
 def Index(request):

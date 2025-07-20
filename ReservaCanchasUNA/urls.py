@@ -19,7 +19,8 @@ from django.urls import path
 from ReservaCanchasUNA import views
 
 urlpatterns = [
-    path('', views.Index, name="index"),
+    path('', views.inicio, name='inicio'),
+    
     path('crearpersona/', views.crear_persona, name='crear_persona'),
     path('listarpersona/', views.listar_personas, name='listar_personas'),
 ]
