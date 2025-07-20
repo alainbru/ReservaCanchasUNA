@@ -9,3 +9,7 @@ class Formulario_Persona(forms.Form):
     codigo = forms.CharField(max_length=100, required=False, label="Código")
     contrasena = forms.CharField(max_length=100, widget=forms.PasswordInput, required=False, label="Contraseña")
     rol = forms.CharField(max_length=100, required=False, label="Rol")
+    
+class Formulario_Login(forms.Form):
+    correo = forms.EmailField(label="Usuario")
+    contrasena = forms.CharField(widget=forms.PasswordInput, label="Contraseña")

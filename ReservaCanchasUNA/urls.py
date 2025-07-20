@@ -23,4 +23,6 @@ urlpatterns = [
     
     path('crearpersona/', views.crear_persona, name='crear_persona'),
     path('listarpersona/', views.listar_personas, name='listar_personas'),
+    path('login/', views.login_view, name='login_view'),
+
 ]

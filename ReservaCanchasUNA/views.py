@@ -1,10 +1,12 @@
 from django.http import HttpResponse
-from django.shortcuts import render
+from django.shortcuts import render, redirect
+from django.contrib import messages
+
 from . import forms, models
-from ReservaCanchasUNA import views
+from .forms import Formulario_Login
 from .models import Persona
-from django.shortcuts import render
-from django.http import HttpResponse
+
+
 
 #---------------------------------------Pagina inicio---------------------------------------
 
@@ -49,4 +51,25 @@ def crear_persona(request):
 
 def listar_personas(request):
     return render(request, "ReservaCanchasUNA/lista_personas.html",{"personas":models.Persona.objects.all()})
+
+
+#---------------------------------------para logiarse---------------------------------------
+def login_view(request):
+    if request.method == 'POST':
+        form = Formulario_Login(request.POST)
+        if form.is_valid():
+            correo = form.cleaned_data['correo']
+            contrasena = form.cleaned_data['contrasena']
+            
+            try:
+                persona = Persona.objects.get(correo=correo, contrasena=contrasena)
+                request.session['persona_id'] = persona.id
+                # Redirigir correctamente (puedes cambiar 'listar_personas' por la vista que quieras)
+                # se va redirigir a los modulos segun el caso faltaria el if nada mas
+                return HttpResponse(f"Hola bienvenid {persona.nombre}")
+            except Persona.DoesNotExist:
+                messages.error(request, 'Usuario o contraseña incorrectos')
+    else:
+        form = Formulario_Login()
     
+    return render(request, 'ReservaCanchasUNA/inicio.html', {'formulario': Formulario_Login()})

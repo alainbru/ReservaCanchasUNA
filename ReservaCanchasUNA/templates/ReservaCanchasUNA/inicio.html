@@ -1,3 +1,5 @@
+{% load crispy_forms_tags %}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -8,7 +10,17 @@
 <body>
 
     <h1>Bienvenidos a Canchas UNA PUNO</h1>
+    <h2>_____Iniciar sesion_____</h2>
 
+      <div>
+        <form action="{% url 'login_view' %}" method="post">
+            {% csrf_token %}
+            {{ formulario|crispy }}
+            <button class="btn btn-primary">Ingresar</button>
+        </form>
+    </div>
+
+    <h3>Si aun no se ha registrado</h3>
     <form action="{% url 'crear_persona' %}" method="get">
         <button type="submit">Registrarse</button>
 
