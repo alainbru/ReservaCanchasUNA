@@ -42,7 +42,8 @@ def crear_persona(request):
                 contrasena=contrasenas,
                 rol=rols
             )
-            return HttpResponse(f"Hola {nombres} {apellidop}, fuiste registrado correctamente.")
+            return HttpResponse(f"Hola {nombres} {apellidop}, fuiste registrado correctamente." )     
+
 
     else:
         formulario = forms.Formulario_Persona()
@@ -64,9 +65,18 @@ def login_view(request):
             try:
                 persona = Persona.objects.get(correo=correo, contrasena=contrasena)
                 request.session['persona_id'] = persona.id
+                
+                if persona.rol == 'admin':
+                    return redirect('admin:inicio_admin')
+                if persona.rol == 'estudiante':
+                    return redirect('estudiante:inicio_estudiante')
+                if persona.rol == 'coordinador':
+                    return redirect('coordinador:inicio_coordinador')
+                
                 # Redirigir correctamente (puedes cambiar 'listar_personas' por la vista que quieras)
                 # se va redirigir a los modulos segun el caso faltaria el if nada mas
-                return HttpResponse(f"Hola bienvenid {persona.nombre}")
+                # return HttpResponse(f"Hola bienvenid {persona.nombre}")
+            
             except Persona.DoesNotExist:
                 messages.error(request, 'Usuario o contraseña incorrectos')
     else:

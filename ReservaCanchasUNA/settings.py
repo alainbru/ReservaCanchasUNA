@@ -46,9 +46,9 @@ INSTALLED_APPS = [
          'crispy_bootstrap5',  
          
     ##Los nuevos modulos que se añadio
-    'administrador'
-    'coordinador'
-    'estudiante'
+    'administrador',
+    'coordinador',
+    'estudiante',
 ]
 
 MIDDLEWARE = [

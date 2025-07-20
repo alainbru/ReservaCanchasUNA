@@ -1,3 +1,4 @@
 from django.shortcuts import render
 
-# Create your views here.
+def inicio_ad(request):
+    return render(request, 'administrador/inicio_admin.html')
