@@ -19,10 +19,14 @@ from django.urls import include, path
 from ReservaCanchasUNA import views
 
 urlpatterns = [
+    
+    path('', views.principal, name='principal'),
+
     path('', views.inicio, name='inicio'),
     
     path('crearpersona/', views.crear_persona, name='crear_persona'),
     path('listarpersona/', views.listar_personas, name='listar_personas'),
+    
     path('login/', views.login_view, name='login_view'),
     
     ##para redicionar a los aps

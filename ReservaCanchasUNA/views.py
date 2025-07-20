@@ -6,10 +6,11 @@ from . import forms, models
 from .forms import Formulario_Login
 from .models import Persona
 
-
+#---------------------------------------Pagina princiapl---------------------------------------
+def principal(request):
+    return render(request, 'ReservaCanchasUNA/principal.html')
 
 #---------------------------------------Pagina inicio---------------------------------------
-
 def inicio(request):
     return render(request, 'ReservaCanchasUNA/inicio.html')
 
@@ -72,14 +73,10 @@ def login_view(request):
                     return redirect('estudiante:inicio_estudiante')
                 if persona.rol == 'coordinador':
                     return redirect('coordinador:inicio_coordinador')
-                
-                # Redirigir correctamente (puedes cambiar 'listar_personas' por la vista que quieras)
-                # se va redirigir a los modulos segun el caso faltaria el if nada mas
-                # return HttpResponse(f"Hola bienvenid {persona.nombre}")
             
             except Persona.DoesNotExist:
                 messages.error(request, 'Usuario o contraseña incorrectos')
     else:
         form = Formulario_Login()
     
-    return render(request, 'ReservaCanchasUNA/inicio.html', {'formulario': Formulario_Login()})
+    return render(request, 'ReservaCanchasUNA/login.html', {'formulario': Formulario_Login()})
