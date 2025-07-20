@@ -27,8 +27,12 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-
+import os 
 # Application definition
+CRISPY_TEMPLATE_PACK = 'bootstrap5'
+
+
+
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -37,6 +41,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'ReservaCanchasUNA',  # Ensure your app is listed here
+     'crispy_forms',
+         'crispy_bootstrap5',  
 ]
 
 MIDDLEWARE = [
@@ -54,6 +61,7 @@ ROOT_URLCONF = 'ReservaCanchasUNA.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],   
         'DIRS': [],
         'APP_DIRS': True,
         'OPTIONS': {

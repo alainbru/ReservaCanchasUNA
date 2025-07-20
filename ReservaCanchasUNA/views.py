@@ -1,10 +1,17 @@
 from django.http import HttpResponse
 from django.shortcuts import render
 from . import forms, models
+from ReservaCanchasUNA import views
+from .models import Persona
+from django.shortcuts import render
+from .models import Persona
+from django.http import HttpResponse
+
+
 
 #---------------------------------------pagina por defecto---------------------------------------
 def Index(request):
-    return HttpResponse("Hola mundo desde formuario")
+    return HttpResponse("esta funcioanndao correctaente ")
 
 #---------------------------------------para registrar---------------------------------------
 def crear_persona(request):
@@ -32,11 +39,12 @@ def crear_persona(request):
                 rol=rols
             )
             return HttpResponse(f"Hola {nombres} {apellidop}, fuiste registrado correctamente.")
+
     else:
         formulario = forms.Formulario_Persona()
-    return render(request, "cliente/persona.html", {"formulario": formulario})
+    return render(request, "ReservaCanchasUNA/persona.html", {"formulario": formulario})
 
 
 def listar_personas(request):
-    return render(request, "cliente/lista_personas.html",{"personas":models.Persona.objects.all()})
+    return render(request, "ReservaCanchasUNA/lista_personas.html",{"personas":models.Persona.objects.all()})
     
