@@ -29,6 +29,9 @@
             <td>{{ persona.escuela }}</td>
             <td>{{ persona.codigo }}</td>
             <td>{{ persona.rol }}</td>
+            <td>
+            <a href="{% url 'admin:eliminar_persona' persona.id %}" onclick="return confirm('¿Estás seguro de que deseas eliminar esta persona?');">Eliminar</a>
+            </td>
         </tr>
         {% endfor %}
     </table>

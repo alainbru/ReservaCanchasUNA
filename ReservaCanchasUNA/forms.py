@@ -11,7 +11,7 @@ class Formulario_Persona(forms.Form):
     rol = forms.CharField(max_length=100, required=False, label="Rol")
     
 class Formulario_Login(forms.Form):
-    correo = forms.EmailField(label="Usuario")
+    codigo = forms.CharField(label="Codigo")
     contrasena = forms.CharField(widget=forms.PasswordInput, label="Contraseña")
 
 from .models import Reserva

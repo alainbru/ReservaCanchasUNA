@@ -7,6 +7,7 @@
 <body>
     <h1>Lista de reservas</h1>
 
+    <!-- Select sport dropdown -->
     <form method="get" action="">
         <label for="deporte">Selecciona deporte:</label>
         <select name="deporte" id="deporte" onchange="this.form.submit()">
@@ -19,18 +20,17 @@
 
     <br>
 
+    <!-- Reservation table -->
     <table border="1">
+        <!-- Table Header: Hours and Days -->
         <tr>
-            <th rowspan="{% if deporte == 'futbol' %}1{% else %}2{% endif %}">Hora</th>
+            <th rowspan="2">Hora</th>
             {% for dia in dias %}
-                {% if deporte == 'futbol' %}
-                    <th>{{ dia }}</th>
-                {% else %}
-                    <th colspan="2">{{ dia }}</th>
-                {% endif %}
+                <th>{{ dia }}</th>
             {% endfor %}
         </tr>
 
+        <!-- Table Header: Canchas (For sports with multiple courts like Futsal, Volleyball, and Basketball) -->
         {% if deporte != 'futbol' %}
         <tr>
             {% for dia in dias %}
@@ -40,11 +40,13 @@
         </tr>
         {% endif %}
 
+        <!-- Loop through all hours -->
         {% for hora in horas %}
         <tr>
             <td>{{ hora }}</td>
             {% for dia in dias %}
                 {% if deporte == 'futbol' %}
+                    <!-- For futbol, we show only one column per day -->
                     <td>
                         {% for reserva in reservas %}
                             {% if reserva.dia == dia and reserva.hora == hora %}
