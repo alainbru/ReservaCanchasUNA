@@ -36,5 +36,5 @@ urlpatterns = [
 
     ######faltaria solucionar bien esa
     #path('reservas/', views.vista_reservas, name='vista_reservas'),
-
+    #solucionar la parte de longin y registro 
 ]

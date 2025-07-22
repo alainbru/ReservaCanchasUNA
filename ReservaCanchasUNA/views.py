@@ -86,14 +86,14 @@ def login_view(request):
     
 #'''---------------------------------------para reservas---------------------------------------
 def vista_reservas(request):
-    deporte = request.GET.get('deporte', 'futbol')  # por defecto muestra fútbol
+    deporte = request.GET.get('deporte', 'futbol')  # Default is fútbol
 
     if request.method == 'POST':
         reserva_id = request.POST.get('id_reserva')
         reserva = Reserva.objects.get(id=reserva_id)
         reserva.disponible = False
         reserva.save()
-        return redirect(f"{request.path}?deporte={deporte}")  # mantiene el deporte seleccionado
+        return redirect(f"{request.path}?deporte={deporte}")  # Keep the selected sport
 
     dias = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes']
     horas = [
@@ -102,8 +102,13 @@ def vista_reservas(request):
         "15:00-16:00", "16:00-17:00", "17:00-18:00", "18:00-19:00", "19:00-20:00"
     ]
 
-    canchas = ['cancha 1', 'cancha 2'] if deporte != 'futbol' else ['']
-    reservas = Reserva.objects.filter(deporte=deporte)
+    # For non-football sports, include both "cancha 1" and "cancha 2"
+    if deporte != 'futbol':
+        canchas = ['cancha 1', 'cancha 2']
+    else:
+        canchas = []  # For fútbol, no need to differentiate between courts
+
+    reservas = Reserva.objects.filter(deporte=deporte, dia__in=dias, hora__in=horas, cancha__in=canchas)
 
     return render(request, 'ReservaCanchasUNA/reservas.html', {
         'dias': dias,
