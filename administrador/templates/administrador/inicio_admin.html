@@ -1,3 +1,4 @@
+{% load crispy_forms_tags %}
 
 <!DOCTYPE html>
 <html lang="en">
@@ -9,6 +10,14 @@
 <body>
 
     <h1>Bienvenido Pagina del ADMINISTRADOR</h1>
+    <p>Ver lista de usuarios</p>
+    <div>
+        <form action="{% url 'admin:lista_usuarios' %}" method="post">
+            {% csrf_token %}
+            {{ formulario|crispy }}
+            <button class="btn btn-primary">Ver usuarios</button>
+        </form>
+    </div>
     
 </body>
 </html>
