@@ -63,11 +63,11 @@ def login_view(request):
     if request.method == 'POST':
         form = Formulario_Login(request.POST)
         if form.is_valid():
-            correo = form.cleaned_data['correo']
+            codigo = form.cleaned_data['codigo']
             contrasena = form.cleaned_data['contrasena']
             
             try:
-                persona = Persona.objects.get(correo=correo, contrasena=contrasena)
+                persona = Persona.objects.get(codigo=codigo, contrasena=contrasena)
                 request.session['persona_id'] = persona.id
                 
                 if persona.rol == 'admin':
