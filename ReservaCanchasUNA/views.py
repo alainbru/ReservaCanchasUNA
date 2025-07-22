@@ -105,10 +105,11 @@ def vista_reservas(request):
     # For non-football sports, include both "cancha 1" and "cancha 2"
     if deporte != 'futbol':
         canchas = ['cancha 1', 'cancha 2']
+        reservas = Reserva.objects.filter(deporte=deporte, dia__in=dias, hora__in=horas, cancha__in=canchas)
     else:
-        canchas = []  # For fútbol, no need to differentiate between courts
+        canchas = []
+        reservas = Reserva.objects.filter(deporte=deporte, dia__in=dias, hora__in=horas)
 
-    reservas = Reserva.objects.filter(deporte=deporte, dia__in=dias, hora__in=horas, cancha__in=canchas)
 
     return render(request, 'ReservaCanchasUNA/reservas.html', {
         'dias': dias,
