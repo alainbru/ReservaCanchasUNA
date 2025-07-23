@@ -86,20 +86,28 @@ def login_view(request):
     
 #'''---------------------------------------para reservas---------------------------------------
 def vista_reservas(request):
+    persona_id = request.session.get('persona_id')
+    rol = None
+    if persona_id:
+        persona = Persona.objects.get(id=persona_id)
+        rol = persona.rol
+
     deporte = request.GET.get('deporte', 'futbol')
-    cancelacion_confirmada = request.session.get('cancelacion_confirmada', False)
+
+    # Verifica si el estado ya es permanente
+    cancelacion_permanente = Reserva.objects.filter(cancelacion_confirmada=True).exists()
 
     if request.method == 'POST':
         accion = request.POST.get('accion')
-        if accion == 'confirmar_cancelacion':
-            cancelacion_confirmada = True
-            request.session['cancelacion_confirmada'] = True
-        elif accion == 'cancelar':
+        if accion == 'confirmar_cancelacion' and not cancelacion_permanente:
+            # Guardar el estado permanente en la BD
+            Reserva.objects.all().update(cancelacion_confirmada=True)
+        elif accion == 'cancelar' and not cancelacion_permanente:
             reserva_id = request.POST.get('id_reserva')
             reserva = Reserva.objects.get(id=reserva_id)
             reserva.disponible = False
             reserva.save()
-        elif accion == 'confirmar':
+        elif accion == 'confirmar' and not cancelacion_permanente:
             reserva_id = request.POST.get('id_reserva')
             reserva = Reserva.objects.get(id=reserva_id)
             reserva.disponible = True
@@ -126,5 +134,6 @@ def vista_reservas(request):
         'canchas': canchas,
         'reservas': reservas,
         'deporte': deporte,
-        'cancelacion_confirmada': cancelacion_confirmada,
+        'cancelacion_confirmada': cancelacion_permanente,
+        'rol': rol,
     })

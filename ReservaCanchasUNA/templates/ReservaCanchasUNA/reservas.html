@@ -16,7 +16,15 @@
     </style>
 </head>
 <body>
-    <h1>Bienvenido a la página del Coordinador</h1>
+    {% if rol == 'coordinador' %}
+    <h1>Bienvenido Coordinador</h1>
+{% elif rol == 'estudiante' %}
+    <h1>Bienvenido Estudiante</h1>
+{% elif rol == 'admin' %}
+    <h1>Bienvenido Administrador</h1>
+{% else %}
+    <h1>Bienvenido</h1>
+{% endif %}
 
     <!-- Formulario para seleccionar el deporte -->
     <form method="get" action="">
@@ -48,7 +56,7 @@
                         <td>
                             {% for reserva in reservas %}
                                 {% if reserva.dia == dia and reserva.hora == hora %}
-                                    {% if reserva.disponible %}
+                                   {% if reserva.disponible %}
     {% if cancelacion_confirmada %}
         <span>Coordinador</span>
     {% else %}
@@ -146,9 +154,14 @@
     <br>
 
     <!-- Botón Confirmar -->
+{% if not cancelacion_confirmada %}
 <form method="post" action="">
     {% csrf_token %}
     <button type="submit" name="accion" value="confirmar_cancelacion">Confirmar Cancelación</button>
+</form>
+{% endif %}
+<form method="get" action="{% if rol == 'coordinador' %}/coordinador{% elif rol == 'estudiante' %}/estudiante{% elif rol == 'admin' %}/admin{% else %}/{% endif %}">
+    <button type="submit">Salir</button>
 </form>
 </body>
 </html>
