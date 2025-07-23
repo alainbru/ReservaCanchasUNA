@@ -8,7 +8,8 @@ app_name = 'estudiante'
 
 urlpatterns = [
     path('', views.inicio_es, name='inicio_estudiante'),
-    path('reservas/', vista_reservas, name='estudiante_reservas'),
+    
+    path('reservas_es/', views.reservas_es, name='reservas_es'),
     
     
     
