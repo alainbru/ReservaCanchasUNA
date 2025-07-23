@@ -21,8 +21,8 @@ urlpatterns = [
     path('reservas/eliminar/<int:reserva_id>/', views.eliminar_reserva, name='eliminar_reserva'),
 
     # URLs para la gestión de penalizaciones
-    path('penalizaciones/', views.gestionar_penalizaciones, name='gestionar_penalizaciones'),
     path('penalizaciones/penalizar/<int:persona_id>/', views.penalizar_usuario, name='penalizar_usuario'),
+    path('penalizaciones/', views.gestionar_penalizaciones, name='gestionar_penalizaciones'),
     path('penalizaciones/quitar/<int:persona_id>/', views.quitar_penalizacion, name='quitar_penalizacion'),
 ]
 

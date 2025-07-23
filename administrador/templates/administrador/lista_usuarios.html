@@ -46,6 +46,11 @@
                 <td>
                     <a href="{% url 'admin:editar_persona' persona.id %}" class="btn-action btn-edit">Editar</a>
                     <a href="{% url 'admin:eliminar_persona' persona.id %}" class="btn-action btn-delete" onclick="return confirm('¿Estás seguro de que deseas eliminar a {{ persona.nombre }}?');">Eliminar</a>
+                    {% if not persona.penalizado %} {# Solo muestra el botón si no está penalizado #}
+                        <a href="{% url 'admin:penalizar_usuario' persona.id %}" class="btn-action btn-penalize">Penalizar</a>
+                    {% else %}
+                        <span class="text-muted">Penalizado</span>
+                    {% endif %}
                 </td>
             </tr>
             {% endfor %}

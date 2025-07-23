@@ -2,7 +2,7 @@
 
 from django.shortcuts import render,redirect, get_object_or_404
 from ReservaCanchasUNA.models import Persona, Reserva #importamos la base desde el principal
-from ReservaCanchasUNA.forms import Formulario_Persona, ReservaForm # Importamos el formulario de Persona y ReservaForm
+from ReservaCanchasUNA.forms import Formulario_Persona, ReservaForm, PenalizacionForm # Importamos el formulario de Persona y ReservaForm
 from django.contrib import messages # Para mostrar mensajes al usuario
 
 def inicio_ad(request):
@@ -82,22 +82,27 @@ def gestionar_penalizaciones(request):
     # Asumimos que Persona tiene un campo 'penalizado'
     personas_penalizadas = Persona.objects.filter(penalizado=True)
     return render(request, 'administrador/gestionar_penalizaciones.html', {'personas_penalizadas': personas_penalizadas})
-
 def penalizar_usuario(request, persona_id):
     persona = get_object_or_404(Persona, id=persona_id)
     if request.method == 'POST':
-        persona.penalizado = True # Marcar como penalizado
-        persona.save()
-        messages.success(request, f'Usuario {persona.nombre} penalizado correctamente.')
-        return redirect('admin:gestionar_penalizaciones')
-    return render(request, 'administrador/confirmar_penalizacion.html', {'persona': persona})
-
+        form = PenalizacionForm(request.POST, instance=persona) # Usa PenalizacionForm
+        if form.is_valid():
+            persona.penalizado = True # Asegura que penalizado se establezca en True
+            persona.penalizacion_motivo = form.cleaned_data['penalizacion_motivo'] # Obtiene el motivo
+            persona.save()
+            messages.success(request, f'Usuario {persona.nombre} penalizado correctamente.')
+            return redirect('admin:gestionar_penalizaciones')
+    else:
+        form = PenalizacionForm(instance=persona) # Pasa la instancia para prellenar si es necesario
+    return render(request, 'administrador/confirmar_penalizacion.html', {'persona': persona, 'form': form}) # Pasa el formulario a la plantilla
 def quitar_penalizacion(request, persona_id):
     persona = get_object_or_404(Persona, id=persona_id)
     if request.method == 'POST':
         persona.penalizado = False # Quitar penalización
+        persona.penalizacion_motivo = None # Limpiar el motivo al despenalizar
         persona.save()
         messages.success(request, f'Penalización quitada a {persona.nombre} correctamente.')
         return redirect('admin:gestionar_penalizaciones')
     return render(request, 'administrador/confirmar_quitar_penalizacion.html', {'persona': persona})
+
 

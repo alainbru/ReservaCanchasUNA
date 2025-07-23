@@ -27,6 +27,7 @@
                     <th>Nombre</th>
                     <th>Código</th>
                     <th>Correo</th>
+                    <th>Motivo</th>
                     <th>Acciones</th>
                 </tr>
             </thead>
@@ -36,6 +37,7 @@
                     <td>{{ persona.nombre }} {{ persona.apellido_paterno }}</td>
                     <td>{{ persona.codigo }}</td>
                     <td>{{ persona.correo }}</td>
+                    <td>{{ persona.penalizacion_motivo|default:"N/A" }}</td>
                     <td>
                         <a href="{% url 'admin:quitar_penalizacion' persona.id %}" class="btn-action btn-unpenalize" onclick="return confirm('¿Estás seguro de que deseas quitar la penalización a {{ persona.nombre }}?');">Quitar Penalización</a>
                     </td>

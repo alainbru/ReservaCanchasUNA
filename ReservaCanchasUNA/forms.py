@@ -133,7 +133,10 @@ class ReservaForm(forms.ModelForm):
 
 # Nuevo formulario para Penalizaciones
 class PenalizacionForm(forms.ModelForm):
-    class Meta:
-        model = Persona # Usaremos el modelo Persona para asociar la penalización
-        fields = ['codigo', 'penalizado'] # Asumimos que agregaremos un campo 'penalizado' a Persona
+     class Meta:
+        model = Persona
+        fields = ['penalizado', 'penalizacion_motivo'] # Añade 'penalizacion_motivo' aquí
+        widgets = {
+             'penalizacion_motivo': forms.Textarea(attrs={'rows': 4}), # Opcional: hazlo un área de texto
+        }
 
