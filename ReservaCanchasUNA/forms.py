@@ -3,12 +3,12 @@ from django.core.exceptions import ValidationError
 from django.core.validators import MinValueValidator, MaxValueValidator
 from .models import Reserva, Persona
 class Formulario_Persona(forms.Form):
-    ROLES_CHOICES = [
+    ROLES = [
         ('estudiante', 'Estudiante'),
         ('coordinador', 'Coordinador'),
         ('admin', 'Administrador'),
     ]
-    CARRERAS_CHOICES = [
+    CARRERAS = [
         ('agronomia', 'Agronomía'),
         ('antropologia', 'Antropología'),
         ('arquitectura', 'Arquitectura y Urbanismo'),
@@ -59,7 +59,7 @@ class Formulario_Persona(forms.Form):
         if Persona.objects.filter(correo=correo).exists():
             raise ValidationError("Este correo ya está registrado. Por favor, usa otro.")
         return correo
-    escuela = forms.ChoiceField(choices=CARRERAS_CHOICES, label="Escuela Profesional")
+    escuela = forms.ChoiceField(choices=CARRERAS, label="Escuela Profesional")
     codigo = forms.IntegerField(
         required=True, # Considera cambiar a True si siempre debe ser obligatorio
         label="Código",
@@ -74,10 +74,17 @@ class Formulario_Persona(forms.Form):
             raise ValidationError("Este código ya está registrado. Por favor, usa uno diferente.")
         return codigo
     contrasena = forms.CharField(max_length=100, widget=forms.PasswordInput, required=False, label="Contraseña")
-    rol = forms.ChoiceField(choices=ROLES_CHOICES, label="Rol")
+    rol = forms.ChoiceField(choices=ROLES, label="Rol")
     
 class Formulario_Login(forms.Form):
-    codigo = forms.CharField(label="Codigo")
+    codigo = forms.IntegerField(
+        required=True,
+        label="Código",
+        validators=[
+            MinValueValidator(100000),
+            MaxValueValidator(999999)
+        ]
+    )
     contrasena = forms.CharField(widget=forms.PasswordInput, label="Contraseña")
 
 from .models import Reserva
