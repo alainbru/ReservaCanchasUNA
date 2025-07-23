@@ -1,0 +1,55 @@
+{% load crispy_forms_tags %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Reservas</title>
+</head>
+<body>
+
+    <h1>Gestión de Reservas</h1>
+
+    {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+                <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    <a href="{% url 'admin:agregar_reserva' %}" class="btn-add">Agregar Nueva Reserva</a>
+
+    <h2>Lista de Reservas</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Día</th>
+                <th>Hora</th>
+                <th>Cancha</th>
+                <th>Deporte</th>
+                <th>Disponible</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for reserva in reservas %}
+            <tr>
+                <td>{{ reserva.dia }}</td>
+                <td>{{ reserva.hora }}</td>
+                <td>{{ reserva.cancha|default:"N/A" }}</td> {# Muestra N/A si la cancha es nula #}
+                <td>{{ reserva.deporte }}</td>
+                <td>{% if reserva.disponible %}Sí{% else %}No{% endif %}</td>
+                <td>
+                    <a href="{% url 'admin:editar_reserva' reserva.id %}" class="btn-action btn-edit">Editar</a>
+                    <a href="{% url 'admin:eliminar_reserva' reserva.id %}" class="btn-action btn-delete" onclick="return confirm('¿Estás seguro de que deseas eliminar esta reserva?');">Eliminar</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    
+</body>
+</html>
+

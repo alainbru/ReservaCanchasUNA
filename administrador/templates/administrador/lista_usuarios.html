@@ -5,37 +5,54 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Lista de Usuarios</title>
 </head>
 <body>
 
+    <h1>Gestión de Usuarios</h1>
+
+    {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+                <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
     <h2>Lista de Personas</h2>
     <table border="1">
-        <tr>
-            <th>Nombre</th>
-            <th>Apellido Paterno</th>
-            <th>Apellido Materno</th>
-            <th>Correo</th>
-            <th>Escuela</th>
-            <th>Código</th>
-            <th>Rol</th>
-        </tr>
-        {% for persona in personas %}
-        <tr>
-            <td>{{ persona.nombre }}</td>
-            <td>{{ persona.apellido_paterno }}</td>
-            <td>{{ persona.apellido_materno }}</td>
-            <td>{{ persona.correo }}</td>
-            <td>{{ persona.escuela }}</td>
-            <td>{{ persona.codigo }}</td>
-            <td>{{ persona.rol }}</td>
-            <td>
-            <a href="{% url 'admin:eliminar_persona' persona.id %}" onclick="return confirm('¿Estás seguro de que deseas eliminar esta persona?');">Eliminar</a>
-            </td>
-        </tr>
-        {% endfor %}
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Apellido Paterno</th>
+                <th>Apellido Materno</th>
+                <th>Correo</th>
+                <th>Escuela</th>
+                <th>Código</th>
+                <th>Rol</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for persona in personas %}
+            <tr>
+                <td>{{ persona.nombre }}</td>
+                <td>{{ persona.apellido_paterno }}</td>
+                <td>{{ persona.apellido_materno }}</td>
+                <td>{{ persona.correo }}</td>
+                <td>{{ persona.escuela }}</td>
+                <td>{{ persona.codigo }}</td>
+                <td>{{ persona.rol }}</td>
+                <td>
+                    <a href="{% url 'admin:editar_persona' persona.id %}" class="btn-action btn-edit">Editar</a>
+                    <a href="{% url 'admin:eliminar_persona' persona.id %}" class="btn-action btn-delete" onclick="return confirm('¿Estás seguro de que deseas eliminar a {{ persona.nombre }}?');">Eliminar</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
     </table>
    
     
 </body>
 </html>
+

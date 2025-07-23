@@ -1,7 +1,10 @@
+# ReservaCanchasUNA/forms.py
+
 from django import forms
 from django.core.exceptions import ValidationError
 from django.core.validators import MinValueValidator, MaxValueValidator
 from .models import Reserva, Persona
+
 class Formulario_Persona(forms.Form):
     ROLES = [
         ('estudiante', 'Estudiante'),
@@ -50,32 +53,68 @@ class Formulario_Persona(forms.Form):
         label="Correo Institucional",
         help_text="Debe ser un correo @est.unap.edu.pe"
     )
+    # Modificación para permitir la edición sin cambiar el correo si no es necesario
     def clean_correo(self):
         correo = self.cleaned_data['correo']
-    # Validación de dominio institucional
+        
+        # Verificamos si estamos editando o creando
+        if self.instance is not None:
+            # Si estamos editando, verificamos si el correo ha cambiado
+            if self.instance.correo == correo:
+                return correo
+        
+        # Validación para correos institucionales
         if not correo.endswith('@est.unap.edu.pe'):
             raise ValidationError("Solo se permiten correos institucionales (@est.unap.edu.pe).")
-    # Validación de unicidad
+        
+        # Verificamos si el correo ya existe en la base de datos
         if Persona.objects.filter(correo=correo).exists():
             raise ValidationError("Este correo ya está registrado. Por favor, usa otro.")
+        
         return correo
+
     escuela = forms.ChoiceField(choices=CARRERAS, label="Escuela Profesional")
     codigo = forms.IntegerField(
-        required=True, # Considera cambiar a True si siempre debe ser obligatorio
+        required=True,
         label="Código",
         validators=[
             MinValueValidator(100000, message="El código debe tener 6 dígitos."),
             MaxValueValidator(999999, message="El código debe tener 6 dígitos.")
         ]
     )
+    # Modificación para permitir la edición sin cambiar el código si no es necesario
     def clean_codigo(self):
         codigo = self.cleaned_data['codigo']
+        
+        # Verificamos si estamos editando o creando
+        if self.instance is not None:
+            # Si estamos editando, verificamos si el código ha cambiado
+            if self.instance.codigo == codigo:
+                return codigo
+        
+        # Validación para verificar si el código ya existe en la base de datos
         if Persona.objects.filter(codigo=codigo).exists():
             raise ValidationError("Este código ya está registrado. Por favor, usa uno diferente.")
+        
         return codigo
+
     contrasena = forms.CharField(max_length=100, widget=forms.PasswordInput, required=False, label="Contraseña")
     rol = forms.ChoiceField(choices=ROLES, label="Rol")
-    
+
+    # Constructor para inicializar el formulario con una instancia de Persona
+    def __init__(self, *args, **kwargs):
+        self.instance = kwargs.pop('instance', None)
+        super().__init__(*args, **kwargs)
+        if self.instance:
+            self.fields['nombre'].initial = self.instance.nombre
+            self.fields['apellido_paterno'].initial = self.instance.apellido_paterno
+            self.fields['apellido_materno'].initial = self.instance.apellido_materno
+            self.fields['correo'].initial = self.instance.correo
+            self.fields['escuela'].initial = self.instance.escuela
+            self.fields['codigo'].initial = self.instance.codigo
+            self.fields['rol'].initial = self.instance.rol
+            # No inicializamos la contraseña por seguridad
+
 class Formulario_Login(forms.Form):
     codigo = forms.IntegerField(
         required=True,
@@ -87,9 +126,14 @@ class Formulario_Login(forms.Form):
     )
     contrasena = forms.CharField(widget=forms.PasswordInput, label="Contraseña")
 
-from .models import Reserva
-
 class ReservaForm(forms.ModelForm):
     class Meta:
         model = Reserva
-        fields = ['dia', 'hora', 'disponible']
+        fields = ['dia', 'hora', 'cancha', 'deporte', 'disponible'] # Agregamos 'cancha' y 'deporte' para poder agregar reservas
+
+# Nuevo formulario para Penalizaciones
+class PenalizacionForm(forms.ModelForm):
+    class Meta:
+        model = Persona # Usaremos el modelo Persona para asociar la penalización
+        fields = ['codigo', 'penalizado'] # Asumimos que agregaremos un campo 'penalizado' a Persona
+

@@ -1,0 +1,22 @@
+{% load crispy_forms_tags %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editar Persona</title>
+</head>
+<body>
+    <div class="form-container">
+        <h1>Editar Persona: {{ persona.nombre }} {{ persona.apellido_paterno }}</h1>
+        <form method="post">
+            {% csrf_token %}
+            {{ formulario|crispy }}
+            <button type="submit" class="btn-primary">Guardar Cambios</button>
+            <a href="{% url 'admin:lista_usuarios' %}" class="btn-primary">Cancelar</a>
+        </form>
+    </div>
+</body>
+</html>
+

@@ -18,6 +18,7 @@ class Persona(models.Model):
     )
     contrasena = models.CharField(max_length=100, blank=True, null=True)
     rol = models.CharField(max_length=100, default='estudiante', null=False)
+    penalizado = models.BooleanField(default=False)
     def __str__(self):
         return f"{self.nombre} {self.apellido_paterno} ({self.rol})"
 

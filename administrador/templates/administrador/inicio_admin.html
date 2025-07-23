@@ -10,14 +10,17 @@
 <body>
 
     <h1>Bienvenido Pagina del ADMINISTRADOR</h1>
-    <p>Ver lista de usuarios</p>
+    
     <div>
-        <form action="{% url 'admin:lista_usuarios' %}" method="post">
-            {% csrf_token %}
-            {{ formulario|crispy }}
-            <button class="btn btn-primary">Ver usuarios</button>
-        </form>
+        <a href="{% url 'admin:lista_usuarios' %}" class="btn-link">Gestionar Usuarios</a>
+    </div>
+    <div>
+        <a href="{% url 'admin:gestionar_reservas' %}" class="btn-link">Gestionar Reservas</a>
+    </div>
+    <div>
+        <a href="{% url 'admin:gestionar_penalizaciones' %}" class="btn-link">Gestionar Penalizaciones</a>
     </div>
     
 </body>
 </html>
+
