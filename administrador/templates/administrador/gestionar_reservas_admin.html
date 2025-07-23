@@ -1,0 +1,179 @@
+{# administrador/gestionar_reservas_admin.html #}
+{% load crispy_forms_tags %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Reservas (Admin)</title>
+</head>
+<body>
+
+    <h1>Gestión de Reservas (Administrador)</h1>
+
+    {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+                <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    {# Filtro por deporte #}
+    <form method="get" action="{% url 'admin:gestionar_reservas' %}" class="form-inline">
+        <label for="deporte">Selecciona deporte:</label>
+        <select name="deporte" id="deporte" onchange="this.form.submit()">
+            <option value="voley" {% if deporte == 'voley' %}selected{% endif %}>Vóley</option>
+            <option value="basquet" {% if deporte == 'basquet' %}selected{% endif %}>Básquet</option>
+            <option value="futsal" {% if deporte == 'futsal' %}selected{% endif %}>Futsal</option>
+            <option value="futbol" {% if deporte == 'futbol' %}selected{% endif %}>Fútbol</option>
+        </select>
+    </form>
+
+    {# Botón para eliminar todas las reservas #}
+    <form method="post" action="{% url 'admin:gestionar_reservas' %}" class="form-inline" onsubmit="return confirm('¿Estás seguro de que deseas eliminar TODAS las reservas? Esta acción es irreversible.');">
+        {% csrf_token %}
+        <input type="hidden" name="accion" value="eliminar_todas">
+        <button type="submit" class="btn-action btn-delete">Eliminar Todas las Reservas</button>
+    </form>
+
+    <br><br>
+
+    {# Tabla de calendario de reservas #}
+    <table>
+        <thead>
+            <tr>
+                <th rowspan="{% if deporte == 'futbol' %}1{% else %}2{% endif %}">Hora</th>
+                {% for dia_nombre in dias %}
+                    {% if deporte == 'futbol' %}
+                        <th>{{ dia_nombre }}</th>
+                    {% else %}
+                        <th colspan="2">{{ dia_nombre }}</th>
+                    {% endif %}
+                {% endfor %}
+            </tr>
+
+            {% if deporte != 'futbol' %}
+            <tr>
+                {% for dia_nombre in dias %}
+                    <th>Cancha 1</th>
+                    <th>Cancha 2</th>
+                {% endfor %}
+            </tr>
+            {% endif %}
+        </thead>
+        <tbody>
+            {% for fila_hora in calendario_reservas %}
+            <tr>
+                <td>{{ fila_hora.hora }}</td>
+                {% for celda_dia in fila_hora.dias %}
+                    {% if deporte == 'futbol' %}
+                        {# Solo una "cancha" para fútbol #}
+                        {% with celda_cancha=celda_dia.canchas.0 %} {# Acceder al primer (y único) elemento #}
+                            <td>
+                                {% with reserva=celda_cancha.reserva %}
+                                    {% if reserva %}
+                                        {# La reserva existe en la DB #}
+                                        {% if reserva.disponible %}
+                                            <p>Disponible</p>
+                                            <form method="post" action="{% url 'admin:gestionar_reservas' %}" class="form-inline">
+                                                {% csrf_token %}
+                                                <input type="hidden" name="accion" value="eliminar_individual">
+                                                <input type="hidden" name="id_reserva" value="{{ reserva.id }}">
+                                                <button type="submit" class="btn-action btn-delete">Eliminar</button>
+                                            </form>
+                                        {% else %}
+                                            <p>Reservado</p>
+                                            <p class="reserved-info">Por: {{ reserva.reservado_por.nombre }} {{ reserva.reservado_por.apellido_paterno }}</p>
+                                            <p class="reserved-info">({{ reserva.fecha_reserva|date:"d M H:i" }})</p>
+                                            <form method="post" action="{% url 'admin:gestionar_reservas' %}" class="form-inline">
+                                                {% csrf_token %}
+                                                <input type="hidden" name="accion" value="eliminar_individual">
+                                                <input type="hidden" name="id_reserva" value="{{ reserva.id }}">
+                                                <input type="hidden" name="deporte" value="{{ deporte }}">
+                                                <button type="submit" class="btn-action btn-delete">Eliminar</button>
+                                            </form>
+                                            <form method="post" action="{% url 'admin:gestionar_reservas' %}" class="form-inline">
+                                                {% csrf_token %}
+                                                <input type="hidden" name="accion" value="eliminar_individual">
+                                                <input type="hidden" name="id_reserva" value="{{ reserva.id }}">
+                                                <button type="submit" class="btn-action btn-delete">Eliminar</button>
+                                            </form>
+                                        {% endif %}
+                                    {% else %}
+                                        {# La franja no existe en la DB, ofrecer agregarla #}
+                                        <p>No existe</p>
+                                        <form method="post" action="{% url 'admin:gestionar_reservas' %}" class="form-inline">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="accion" value="agregar_reserva_manual">
+                                            <input type="hidden" name="dia" value="{{ celda_dia.dia }}">
+                                            <input type="hidden" name="hora" value="{{ fila_hora.hora }}">
+                                            <input type="hidden" name="deporte" value="{{ deporte }}">
+                                            <input type="hidden" name="disponible" value="True">
+                                            <button type="submit" class="btn-action btn-add">Agregar</button>
+                                        </form>
+                                    {% endif %}
+                                {% endwith %}
+                            </td>
+                        {% endwith %}
+                    {% else %}
+                        {# Múltiples canchas para otros deportes #}
+                        {% for celda_cancha in celda_dia.canchas %}
+                            <td>
+                                {% with reserva=celda_cancha.reserva %}
+                                    {% if reserva %}
+                                        {# La reserva existe en la DB #}
+                                        {% if reserva.disponible %}
+                                            <p>Disponible</p>
+                                            <form method="post" action="{% url 'admin:gestionar_reservas' %}" class="form-inline">
+                                                {% csrf_token %}
+                                                <input type="hidden" name="accion" value="eliminar_individual">
+                                                <input type="hidden" name="id_reserva" value="{{ reserva.id }}">
+                                                <button type="submit" class="btn-action btn-delete">Eliminar</button>
+                                            </form>
+                                        {% else %}
+                                            <p>Reservado</p>
+                                            <p class="reserved-info">Por: {{ reserva.reservado_por.nombre }} {{ reserva.reservado_por.apellido_paterno }}</p>
+                                            <p class="reserved-info">({{ reserva.fecha_reserva|date:"d M H:i" }})</p>
+                                            <form method="post" action="{% url 'admin:gestionar_reservas' %}" class="form-inline">
+                                                {% csrf_token %}
+                                                <input type="hidden" name="accion" value="liberar_individual">
+                                                <input type="hidden" name="id_reserva" value="{{ reserva.id }}">
+                                                <button type="submit" class="btn-action btn-liberar">Liberar</button>
+                                            </form>
+                                            <form method="post" action="{% url 'admin:gestionar_reservas' %}" class="form-inline">
+                                                {% csrf_token %}
+                                                <input type="hidden" name="accion" value="eliminar_individual">
+                                                <input type="hidden" name="id_reserva" value="{{ reserva.id }}">
+                                                <button type="submit" class="btn-action btn-delete">Eliminar</button>
+                                            </form>
+                                        {% endif %}
+                                    {% else %}
+                                        {# La franja no existe en la DB, ofrecer agregarla #}
+                                        <p>No existe</p>
+                                        <form method="post" action="{% url 'admin:gestionar_reservas' %}" class="form-inline">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="accion" value="agregar_reserva_manual">
+                                            <input type="hidden" name="dia" value="{{ celda_dia.dia }}">
+                                            <input type="hidden" name="hora" value="{{ fila_hora.hora }}">
+                                            <input type="hidden" name="cancha" value="{{ celda_cancha.nombre }}">
+                                            <input type="hidden" name="deporte" value="{{ deporte }}">
+                                            <input type="hidden" name="disponible" value="True">
+                                            <button type="submit" class="btn-action btn-add">Agregar</button>
+                                        </form>
+                                    {% endif %}
+                                {% endwith %}
+                            </td>
+                        {% endfor %}
+                    {% endif %}
+                {% endfor %}
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+</body>
+</html>
+
+
