@@ -1,141 +1,18 @@
+
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Reservas del Coordinador</title>
-    <style>
-        table, th, td {
-            border: 1px solid black;
-            border-collapse: collapse;
-        }
-        th, td {
-            padding: 8px;
-            text-align: center;
-        }
-    </style>
+    <title>Document</title>
 </head>
 <body>
-    <h1>Bienvenido a la página del Coordinador</h1>
 
-    <!-- Formulario para seleccionar el deporte -->
-    <form method="get" action="">
-        <label for="deporte">Selecciona deporte:</label>
-        <select name="deporte" id="deporte" onchange="this.form.submit()">
-            <option value="voley" {% if deporte == 'voley' %}selected{% endif %}>Vóley</option>
-            <option value="basquet" {% if deporte == 'basquet' %}selected{% endif %}>Básquet</option>
-            <option value="futsal" {% if deporte == 'futsal' %}selected{% endif %}>Futsal</option>
-            <option value="futbol" {% if deporte == 'futbol' %}selected{% endif %}>Fútbol</option>
-        </select>
-    </form>
+    <h1>Bienvenido Pagina del COORDINADOR</h1>
 
-    <br>
-
-    <!-- Tabla de Reservas -->
-    <table>
-        {% if deporte == 'futbol' %}
-            <tr>
-                <th>Hora</th>
-                {% for dia in dias %}
-                    <th>{{ dia }}</th>  <!-- Una columna por día -->
-                {% endfor %}
-            </tr>
-
-            {% for hora in horas %}
-                <tr>
-                    <td>{{ hora }}</td>
-                    {% for dia in dias %}
-                        <td>
-                            {% for reserva in reservas %}
-                                {% if reserva.dia == dia and reserva.hora == hora %}
-                                    {% if reserva.disponible %}
-                                        <form method="post">
-                                            {% csrf_token %}
-                                            <input type="hidden" name="id_reserva" value="{{ reserva.id }}">
-                                            <button type="submit" name="accion" value="cancelar">Cancelar</button>
-                                        </form>
-                                    {% else %}
-                                        <form method="post">
-                                            {% csrf_token %}
-                                            <input type="hidden" name="id_reserva" value="{{ reserva.id }}">
-                                            <button type="submit" name="accion" value="confirmar">Confirmar</button>
-                                        </form>
-                                    {% endif %}
-                                {% endif %}
-                            {% endfor %}
-                        </td>
-                    {% endfor %}
-                </tr>
-            {% endfor %}
-        {% else %}
-            <!-- Aquí va el código para otros deportes -->
-            <tr>
-                <th rowspan="2">Hora</th>
-                {% for dia in dias %}
-                    <th colspan="2">{{ dia }}</th>  <!-- Dos columnas para otros deportes -->
-                {% endfor %}
-            </tr>
-            <tr>
-                {% for dia in dias %}
-                    <th>Cancha 1</th>
-                    <th>Cancha 2</th>
-                {% endfor %}
-            </tr>
-            {% for hora in horas %}
-                <tr>
-                    <td>{{ hora }}</td>
-                    {% for dia in dias %}
-                        <td>
-                            {% for reserva in reservas %}
-                                {% if reserva.dia == dia and reserva.hora == hora and reserva.cancha == 'cancha 1' %}
-                                    {% if reserva.disponible %}
-                                        <form method="post">
-                                            {% csrf_token %}
-                                            <input type="hidden" name="id_reserva" value="{{ reserva.id }}">
-                                            <button type="submit" name="accion" value="cancelar">Cancelar</button>
-                                        </form>
-                                    {% else %}
-                                        <form method="post">
-                                            {% csrf_token %}
-                                            <input type="hidden" name="id_reserva" value="{{ reserva.id }}">
-                                            <button type="submit" name="accion" value="confirmar">Confirmar</button>
-                                        </form>
-                                    {% endif %}
-                                {% endif %}
-                            {% endfor %}
-                        </td>
-                        <td>
-                            {% for reserva in reservas %}
-                                {% if reserva.dia == dia and reserva.hora == hora and reserva.cancha == 'cancha 2' %}
-                                    {% if reserva.disponible %}
-                                        <form method="post">
-                                            {% csrf_token %}
-                                            <input type="hidden" name="id_reserva" value="{{ reserva.id }}">
-                                            <button type="submit" name="accion" value="cancelar">Cancelar</button>
-                                        </form>
-                                    {% else %}
-                                        <form method="post">
-                                            {% csrf_token %}
-                                            <input type="hidden" name="id_reserva" value="{{ reserva.id }}">
-                                            <button type="submit" name="accion" value="confirmar">Confirmar</button>
-                                        </form>
-                                    {% endif %}
-                                {% endif %}
-                            {% endfor %}
-                        </td>
-                    {% endfor %}
-                </tr>
-            {% endfor %}
-        {% endif %}
-    </table>
-
-    <br>
-
-    <!-- Botón Confirmar -->
-    <form method="post" action="">
-        {% csrf_token %}
-        <button type="submit" name="accion" value="confirmar">Confirmar Cancelación</button>
-    </form>
-
+    <a href="{% url 'estudiante:estudiante_reservas' %}" 
+    class="btn btn-primary">Ver Reservas
+    </a>
+    
 </body>
 </html>

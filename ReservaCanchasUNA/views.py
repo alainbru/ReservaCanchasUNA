@@ -85,25 +85,15 @@ def login_view(request):
     return render(request, 'ReservaCanchasUNA/login.html', {'formulario': Formulario_Login()})
     
 #'''---------------------------------------para reservas---------------------------------------
-from django.shortcuts import render, redirect
-from .models import Reserva
-
 def vista_reservas(request):
     deporte = request.GET.get('deporte', 'futbol')  # Default is fútbol
 
     if request.method == 'POST':
         reserva_id = request.POST.get('id_reserva')
-        accion = request.POST.get('accion')  # Acción que viene del botón (reservar o cancelar)
         reserva = Reserva.objects.get(id=reserva_id)
-
-        if accion == 'reservar':
-            reserva.disponible = False  # Se realiza la reserva
-        elif accion == 'cancelar':
-            reserva.disponible = True  # Se cancela la reserva
-
+        reserva.disponible = False
         reserva.save()
-
-        return redirect(f"{request.path}?deporte={deporte}")  # Mantener el deporte seleccionado al recargar la página
+        return redirect(f"{request.path}?deporte={deporte}")  # Keep the selected sport
 
     dias = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes']
     horas = [
@@ -119,6 +109,7 @@ def vista_reservas(request):
     else:
         canchas = []
         reservas = Reserva.objects.filter(deporte=deporte, dia__in=dias, hora__in=horas)
+
 
     return render(request, 'ReservaCanchasUNA/reservas.html', {
         'dias': dias,
