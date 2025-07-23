@@ -55,7 +55,7 @@
                                         <button type="submit">Reservar</button>
                                     </form>
                                 {% else %}
-                                    No disponible
+                                    Confirmado
                                 {% endif %}
                             {% endif %}
                         {% endfor %}
@@ -66,13 +66,17 @@
                             {% for reserva in reservas %}
                                 {% if reserva.dia == dia and reserva.hora == hora and reserva.cancha == cancha %}
                                     {% if reserva.disponible %}
-                                        <form method="post">
-                                            {% csrf_token %}
-                                            <input type="hidden" name="id_reserva" value="{{ reserva.id }}">
-                                            <button type="submit">Reservar</button>
-                                        </form>
+                                        {% if ya_reservo %}
+                                            <button disabled>Reservar</button>
+                                        {% else %}
+                                            <form method="post">
+                                                {% csrf_token %}
+                                                <input type="hidden" name="id_reserva" value="{{ reserva.id }}">
+                                                <button type="submit">Reservar</button>
+                                            </form>
+                                        {% endif %}
                                     {% else %}
-                                        No disponible
+                                        Confirmado
                                     {% endif %}
                                 {% endif %}
                             {% endfor %}
@@ -83,5 +87,10 @@
         </tr>
         {% endfor %}
     </table>
+    {% if ya_reservo %}
+    <form method="get" action="{% url 'inicio_estudiante' %}">
+        <button type="submit">Confirmar</button>
+    </form>
+{% endif %}
 </body>
 </html>

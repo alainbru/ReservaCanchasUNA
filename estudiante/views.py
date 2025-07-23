@@ -9,12 +9,17 @@ def inicio_es(request):
 def reservas_es(request):
     deporte = request.GET.get('deporte', 'futbol')  # Default is fútbol
 
-    if request.method == 'POST':
+    # Verifica si ya reservó en la sesión
+    ya_reservo = request.session.get(f'reservo_{deporte}', False)
+
+    if request.method == 'POST' and not ya_reservo:
         reserva_id = request.POST.get('id_reserva')
         reserva = Reserva.objects.get(id=reserva_id)
         reserva.disponible = False
         reserva.save()
-        return redirect(f"{request.path}?deporte={deporte}")  # Keep the selected sport
+        # Marca que ya reservó en la sesión
+        request.session[f'reservo_{deporte}'] = True
+        return redirect(f"{request.path}?deporte={deporte}")
 
     dias = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes']
     horas = [
@@ -23,7 +28,6 @@ def reservas_es(request):
         "15:00-16:00", "16:00-17:00", "17:00-18:00", "18:00-19:00", "19:00-20:00"
     ]
 
-    # For non-football sports, include both "cancha 1" and "cancha 2"
     if deporte != 'futbol':
         canchas = ['cancha 1', 'cancha 2']
         reservas = Reserva.objects.filter(deporte=deporte, dia__in=dias, hora__in=horas, cancha__in=canchas)
@@ -31,11 +35,11 @@ def reservas_es(request):
         canchas = []
         reservas = Reserva.objects.filter(deporte=deporte, dia__in=dias, hora__in=horas)
 
-
-    return render(request, 'estudiante/reservas_es.html', {
+    return render(request, 'ReservaCanchasUNA/reservas.html', {
         'dias': dias,
         'horas': horas,
         'canchas': canchas,
         'reservas': reservas,
         'deporte': deporte,
+        'ya_reservo': ya_reservo,
     })
