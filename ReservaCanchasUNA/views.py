@@ -87,32 +87,6 @@ def login_view(request):
     
 #'''---------------------------------------para reservas---------------------------------------
 def vista_reservas(request):
-<<<<<<< HEAD
-    deporte = request.GET.get('deporte', 'futbol')
-    if request.method == 'POST':
-        reserva_id = request.POST.get('id_reserva')
-        # No necesitamos 'accion' aquí si esta vista es solo para que el estudiante reserve
-        reserva = get_object_or_404(Reserva, id=reserva_id)
-        # Asumiendo que el usuario logueado es una Persona y está en request.session['persona_id']
-        # Si usas el sistema de autenticación de Django, adapta esto a request.user.persona
-        if 'persona_id' in request.session:
-            persona_logueada = get_object_or_404(Persona, id=request.session['persona_id'])
-            if persona_logueada.rol == 'estudiante': # Asegurarse que solo estudiantes puedan reservar aquí
-                if reserva.disponible:
-                    reserva.disponible = False
-                    reserva.reservado_por = persona_logueada # Asigna la persona logueada
-                    reserva.fecha_reserva = timezone.now() # Registra la fecha y hora de la reserva
-                    reserva.save()
-                    messages.success(request, '¡Reserva realizada con éxito!')
-                else:
-                    messages.error(request, 'Esta franja ya no está disponible.')
-            else:
-                messages.error(request, 'Solo los estudiantes pueden realizar reservas desde aquí.')
-        else:
-            messages.error(request, 'Debes iniciar sesión para reservar.')
-        return redirect(f"{request.path}?deporte={deporte}")
-    # Lógica para mostrar el calendario (GET request)
-=======
     persona_id = request.session.get('persona_id')
     rol = None
     if persona_id:
@@ -141,30 +115,20 @@ def vista_reservas(request):
             reserva.save()
         return redirect(f"{request.path}?deporte={deporte}")
 
->>>>>>> rama_fabiicito
     dias = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes']
     horas = [
         "7:00-8:00", "8:00-9:00", "9:00-10:00", "10:00-11:00",
         "11:00-12:00", "12:00-13:00", "13:00-14:00", "14:00-15:00",
         "15:00-16:00", "16:00-17:00", "17:00-18:00", "18:00-19:00", "19:00-20:00"
     ]
-<<<<<<< HEAD
-    # Obtener todas las reservas para el deporte seleccionado
-=======
-
->>>>>>> rama_fabiicito
     if deporte != 'futbol':
         canchas = ['cancha 1', 'cancha 2']
         # Usamos .all() y luego filtramos en la plantilla para simplificar la vista
         reservas_queryset = Reserva.objects.filter(deporte=deporte).select_related('reservado_por')
     else:
         canchas = []
-<<<<<<< HEAD
-        reservas_queryset = Reserva.objects.filter(deporte=deporte).select_related('reservado_por')
-=======
         reservas = Reserva.objects.filter(deporte=deporte, dia__in=dias, hora__in=horas)
 
->>>>>>> rama_fabiicito
     return render(request, 'ReservaCanchasUNA/reservas.html', {
         'dias': dias,
         'horas': horas,
