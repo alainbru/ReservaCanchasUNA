@@ -11,12 +11,12 @@ def reservas_es(request):
     correo = request.session.get('correo')  # Debes guardar el correo en sesión al iniciar sesión
     persona = Persona.objects.filter(correo=correo).first()
 
-    # Verifica si ya reservó para ese deporte
-    ya_reservo = Reserva.objects.filter(deporte=deporte, persona=persona, disponible=False).exists()
+    cantidad_reservas = Reserva.objects.filter(deporte=deporte, persona=persona, disponible=False).count()
 
-    if request.method == 'POST' and not ya_reservo:
+    if request.method == 'POST' and cantidad_reservas <= 2:
         reserva_id = request.POST.get('id_reserva')
         reserva = Reserva.objects.get(id=reserva_id)
+
         reserva.disponible = False
         reserva.persona = persona
         reserva.save()
@@ -31,9 +31,11 @@ def reservas_es(request):
 
     if deporte != 'futbol':
         canchas = ['cancha 1', 'cancha 2']
+        # Filtrar reservas para el deporte y canchas específicas
         reservas = Reserva.objects.filter(deporte=deporte, dia__in=dias, hora__in=horas, cancha__in=canchas)
     else:
-        canchas = []
+        canchas = []  # Para fútbol, no hay canchas separadas en la tabla
+        # Filtrar reservas para el deporte (fútbol)
         reservas = Reserva.objects.filter(deporte=deporte, dia__in=dias, hora__in=horas)
 
     return render(request, 'estudiante/reservas_es.html', {
@@ -42,5 +44,5 @@ def reservas_es(request):
         'canchas': canchas,
         'reservas': reservas,
         'deporte': deporte,
-        'ya_reservo': ya_reservo,
+        'ya_reservo': cantidad_reservas >= 2,  # Verifica si ya hizo 2 reservas
     })
