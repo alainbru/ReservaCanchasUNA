@@ -1,155 +1,106 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Reservas del Coordinador</title>
-    <style>
-        table, th, td {
-            border: 1px solid black;
-            border-collapse: collapse;
-        }
-        th, td {
-            padding: 8px;
-            text-align: center;
-        }
-    </style>
+    <title>Reservas</title>
+    <link rel="stylesheet" href="https://bootswatch.com/5/solar/bootstrap.min.css">
 </head>
-<body>
-    {% if rol == 'coordinador' %}
-    <h1>Bienvenido Coordinador</h1>
-{% elif rol == 'estudiante' %}
-    <h1>Bienvenido Estudiante</h1>
-{% elif rol == 'admin' %}
-    <h1>Bienvenido Administrador</h1>
-{% else %}
-    <h1>Bienvenido</h1>
-{% endif %}
+<body class="p-4">
 
-    <!-- Formulario para seleccionar el deporte -->
-    <form method="get" action="">
-        <label for="deporte">Selecciona deporte:</label>
-        <select name="deporte" id="deporte" onchange="this.form.submit()">
-            <option value="voley" {% if deporte == 'voley' %}selected{% endif %}>Vóley</option>
-            <option value="basquet" {% if deporte == 'basquet' %}selected{% endif %}>Básquet</option>
-            <option value="futsal" {% if deporte == 'futsal' %}selected{% endif %}>Futsal</option>
-            <option value="futbol" {% if deporte == 'futbol' %}selected{% endif %}>Fútbol</option>
-        </select>
-    </form>
+    <div class="container">
+        <h1 class="text-center mb-4">Lista de Reservas</h1>
 
-    <br>
-
-    <!-- Tabla de Reservas -->
-    <table>
-        {% if deporte == 'futbol' %}
-            <tr>
-                <th>Hora</th>
-                {% for dia in dias %}
-                    <th>{{ dia }}</th>  <!-- Una columna por día -->
-                {% endfor %}
-            </tr>
-
-            {% for hora in horas %}
-                <tr>
-                    <td>{{ hora }}</td>
-                    {% for dia in dias %}
-                        <td>
-                            {% for reserva in reservas %}
-                                {% if reserva.dia == dia and reserva.hora == hora %}
-                                   {% if reserva.disponible %}
-    {% if cancelacion_confirmada %}
-        <span>Coordinador</span>
-    {% else %}
-        <form method="post">
-            {% csrf_token %}
-            <input type="hidden" name="id_reserva" value="{{ reserva.id }}">
-            <button type="submit" name="accion" value="cancelar">Cancelar</button>
+        <!-- Filtro de deporte -->
+        <form method="get" action="" class="mb-4 text-center">
+            <label for="deporte" class="form-label">Selecciona deporte:</label>
+            <select name="deporte" id="deporte" class="form-select d-inline-block w-auto" onchange="this.form.submit()">
+                <option value="voley" {% if deporte == 'voley' %}selected{% endif %}>Vóley</option>
+                <option value="basquet" {% if deporte == 'basquet' %}selected{% endif %}>Básquet</option>
+                <option value="futsal" {% if deporte == 'futsal' %}selected{% endif %}>Futsal</option>
+                <option value="futbol" {% if deporte == 'futbol' %}selected{% endif %}>Fútbol</option>
+            </select>
         </form>
-    {% endif %}
-{% else %}
-    <form method="post">
-        {% csrf_token %}
-        <input type="hidden" name="id_reserva" value="{{ reserva.id }}">
-        <button type="submit" name="accion" value="confirmar">Confirmar</button>
-    </form>
-{% endif %}
-                                {% endif %}
-                            {% endfor %}
-                        </td>
-                    {% endfor %}
-                </tr>
-            {% endfor %}
-        {% else %}
-            <!-- Aquí va el código para otros deportes -->
-            <tr>
-                <th rowspan="2">Hora</th>
-                {% for dia in dias %}
-                    <th colspan="2">{{ dia }}</th>  <!-- Dos columnas para otros deportes -->
-                {% endfor %}
-            </tr>
-            <tr>
-                {% for dia in dias %}
-                    <th>Cancha 1</th>
-                    <th>Cancha 2</th>
-                {% endfor %}
-            </tr>
-            {% for hora in horas %}
-    <tr>
-        <td>{{ hora }}</td>
-        {% for dia in dias %}
-            <!-- Cancha 1 -->
-            <td>
-                {% for reserva in reservas %}
-                    {% if reserva.dia == dia and reserva.hora == hora and reserva.cancha == 'cancha 1' %}
-                        {% if reserva.disponible %}
-                            {% if cancelacion_confirmada %}
-                                <span>Coordinador</span>
-                            {% else %}
-                                <form method="post">
-                                    {% csrf_token %}
-                                    <input type="hidden" name="id_reserva" value="{{ reserva.id }}">
-                                    <button type="submit" name="accion" value="cancelar">Cancelar</button>
-                                </form>
-                            {% endif %}
-                        {% else %}
-                            <form method="post">
-                                {% csrf_token %}
-                                <input type="hidden" name="id_reserva" value="{{ reserva.id }}">
-                                <button type="submit" name="accion" value="confirmar">Confirmar</button>
-                            </form>
-                        {% endif %}
-                    {% endif %}
-                {% endfor %}
-            </td>
-            <!-- Cancha 2 -->
-            <td>
-                {% for reserva in reservas %}
-                    {% if reserva.dia == dia and reserva.hora == hora and reserva.cancha == 'cancha 2' %}
-                        {% if reserva.disponible %}
-                            {% if cancelacion_confirmada %}
-                                <span>Coordinador</span>
-                            {% else %}
-                                <form method="post">
-                                    {% csrf_token %}
-                                    <input type="hidden" name="id_reserva" value="{{ reserva.id }}">
-                                    <button type="submit" name="accion" value="cancelar">Cancelar</button>
-                                </form>
-                            {% endif %}
-                        {% else %}
-                            <form method="post">
-                                {% csrf_token %}
-                                <input type="hidden" name="id_reserva" value="{{ reserva.id }}">
-                                <button type="submit" name="accion" value="confirmar">Confirmar</button>
-                            </form>
-                        {% endif %}
-                    {% endif %}
-                {% endfor %}
-            </td>
-        {% endfor %}
-    </tr>
-{% endfor %}
+
+        {% if ya_reservo %}
+            <div class="alert alert-warning text-center">
+                Ya hiciste una reserva para este deporte.
+            </div>
         {% endif %}
-    </table>
+
+        <!-- Tabla de reservas -->
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover text-center">
+                <thead class="table-dark">
+                    <tr>
+                        <th rowspan="{% if deporte == 'futbol' %}1{% else %}2{% endif %}">Hora</th>
+                        {% for dia in dias %}
+                            {% if deporte == 'futbol' %}
+                                <th>{{ dia }}</th>
+                            {% else %}
+                                <th colspan="2">{{ dia }}</th>
+                            {% endif %}
+                        {% endfor %}
+                    </tr>
+                    {% if deporte != 'futbol' %}
+                    <tr>
+                        {% for dia in dias %}
+                            <th>Cancha 1</th>
+                            <th>Cancha 2</th>
+                        {% endfor %}
+                    </tr>
+                    {% endif %}
+                </thead>
+                <tbody>
+                    {% for hora in horas %}
+                    <tr>
+                        <td>{{ hora }}</td>
+                        {% for dia in dias %}
+                            {% if deporte == 'futbol' %}
+                                <td>
+                                    {% for reserva in reservas %}
+                                        {% if reserva.dia == dia and reserva.hora == hora %}
+                                            {% if reserva.disponible %}
+                                                <form method="post">
+                                                    {% csrf_token %}
+                                                    <input type="hidden" name="id_reserva" value="{{ reserva.id }}">
+                                                    <button type="submit" class="btn btn-sm btn-success">Reservar</button>
+                                                </form>
+                                            {% else %}
+                                                Confirmado
+                                            {% endif %}
+                                        {% endif %}
+                                    {% endfor %}
+                                </td>
+                            {% else %}
+                                {% for cancha in canchas %}
+                                    <td>
+                                        {% for reserva in reservas %}
+                                            {% if reserva.dia == dia and reserva.hora == hora and reserva.cancha == cancha %}
+                                                {% if reserva.disponible %}
+                                                    {% if ya_reservo %}
+                                                        <button class="btn btn-sm btn-secondary" disabled>Reservar</button>
+                                                    {% else %}
+                                                        <form method="post">
+                                                            {% csrf_token %}
+                                                            <input type="hidden" name="id_reserva" value="{{ reserva.id }}">
+                                                            <button type="submit" class="btn btn-sm btn-success">Reservar</button>
+                                                        </form>
+                                                    {% endif %}
+                                                {% else %}
+                                                    Confirmado
+                                                {% endif %}
+                                            {% endif %}
+                                        {% endfor %}
+                                    </td>
+                                {% endfor %}
+                            {% endif %}
+                        {% endfor %}
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
 
     <br>
 
@@ -157,11 +108,11 @@
 {% if not cancelacion_confirmada %}
 <form method="post" action="">
     {% csrf_token %}
-    <button type="submit" name="accion" value="confirmar_cancelacion">Confirmar Cancelación</button>
+    <button type="submit" name="accion" value="confirmar_cancelacion" class="btn btn-warning">Confirmar Cancelación</button>
 </form>
 {% endif %}
 <form method="get" action="{% if rol == 'coordinador' %}/coordinador{% elif rol == 'estudiante' %}/estudiante{% elif rol == 'admin' %}/admin{% else %}/{% endif %}">
-    <button type="submit">Salir</button>
+    <button type="submit"class="btn btn-warning" >Salir</button>
 </form>
 </body>
 </html>
