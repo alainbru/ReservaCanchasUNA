@@ -54,10 +54,14 @@
 <div class="fondo-estudiante">
     <div class="contenido-centro">
         <h1>Bienvenido a la página del estudiante</h1>
-
+        <div class="text-center my-4">
+            <img src="{% static 'images/canchas.png' %}" alt="Imagen de canchas" class="img-fluid" style="max-width: 500px;">
+        </div>
         <a href="{% url 'estudiante:reservas_es' %}" class="btn btn-primary btn-reservas">Ver Reservas</a>
     </div>
 </div>
+
+
 
 </body>
 </html>
