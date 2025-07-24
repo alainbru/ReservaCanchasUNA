@@ -6,58 +6,162 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lista de Usuarios</title>
+    <link rel="stylesheet" href="https://bootswatch.com/5/solar/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #ffffff; /* Fondo blanco puro */
+        }
+        h1, h2 {
+            color: #2c3e50; /* Color oscuro para los títulos */
+        }
+        /* Asegurar que los botones primarios sean azules */
+        .btn-primary {
+            background-color: #268bd2; /* Color azul de Solar */
+            border-color: #268bd2;
+        }
+        .btn-primary:hover {
+            background-color: #217dbb; /* Tono más oscuro al pasar el ratón */
+            border-color: #217dbb;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            border-radius: 8px; /* Bordes redondeados para la tabla */
+            overflow: hidden; /* Asegura que los bordes redondeados se apliquen correctamente */
+        }
+        th, td {
+            border: 1px solid #e0e0e0; /* Borde más suave para las celdas */
+            padding: 12px; /* Mayor padding para mejor legibilidad */
+            text-align: left;
+        }
+        th {
+            background-color: #f0f8ff; /* Un azul muy claro para las cabeceras */
+            color: #333; /* Color de texto más oscuro para contraste */
+            font-weight: bold;
+            text-transform: uppercase; /* Texto en mayúsculas para las cabeceras */
+        }
+        tbody tr:nth-child(even) {
+            background-color: #f9f9f9; /* Un gris muy claro para filas pares */
+        }
+        tbody tr:hover {
+            background-color: #eef; /* Resaltar fila al pasar el ratón */
+        }
+        .messages {
+            list-style: none;
+            padding: 0;
+            margin-top: 20px;
+        }
+        .messages li {
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+        }
+        .messages .success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .btn-edit {
+            background-color: #007bff; /* Azul de información */
+            color: white;
+            border: 1px solid #007bff;
+        }
+        .btn-edit:hover {
+            background-color: #0056b3;
+            border-color: #0056b3;
+        }
+        .btn-delete {
+            background-color: #dc3545; /* Rojo de peligro */
+            color: white;
+            border: 1px solid #dc3545;
+        }
+        .btn-delete:hover {
+            background-color: #bd2130;
+            border-color: #bd2130;
+        }
+        .btn-penalize {
+            background-color: #ffc107; /* Amarillo de advertencia */
+            color: #212529;
+            border: 1px solid #ffc107;
+        }
+        .btn-penalize:hover {
+            background-color: #e0a800;
+            border-color: #e0a800;
+        }
+        .btn-back {
+            background-color: #6c757d; /* Gris */
+            border-color: #6c757d;
+            color: white;
+        }
+        .btn-back:hover {
+            background-color: #5a6268;
+            border-color: #5a6268;
+        }
+    </style>
 </head>
 <body>
+    <div class="container mt-4">
+        <div class="text-center mb-4">
+            <img src="https://campus.unap.edu.pe/images/themes/unap/logo.png" alt="Logo Universidad Nacional del Altiplano Puno" class="img-fluid" style="max-height: 100px;">
+        </div>
+        <h1>Gestión de Usuarios</h1>
 
-    <h1>Gestión de Usuarios</h1>
+        {% if messages %}
+            <ul class="messages">
+                {% for message in messages %}
+                    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
 
-    {% if messages %}
-        <ul class="messages">
-            {% for message in messages %}
-                <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-            {% endfor %}
-        </ul>
-    {% endif %}
-
-    <h2>Lista de Personas</h2>
-    <table border="1">
-        <thead>
-            <tr>
-                <th>Nombre</th>
-                <th>Apellido Paterno</th>
-                <th>Apellido Materno</th>
-                <th>Correo</th>
-                <th>Escuela</th>
-                <th>Código</th>
-                <th>Rol</th>
-                <th>Acciones</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for persona in personas %}
-            <tr>
-                <td>{{ persona.nombre }}</td>
-                <td>{{ persona.apellido_paterno }}</td>
-                <td>{{ persona.apellido_materno }}</td>
-                <td>{{ persona.correo }}</td>
-                <td>{{ persona.escuela }}</td>
-                <td>{{ persona.codigo }}</td>
-                <td>{{ persona.rol }}</td>
-                <td>
-                    <a href="{% url 'admin:editar_persona' persona.id %}" class="btn-action btn-edit">Editar</a>
-                    <a href="{% url 'admin:eliminar_persona' persona.id %}" class="btn-action btn-delete" onclick="return confirm('¿Estás seguro de que deseas eliminar a {{ persona.nombre }}?');">Eliminar</a>
-                    {% if not persona.penalizado %} {# Solo muestra el botón si no está penalizado #}
-                        <a href="{% url 'admin:penalizar_usuario' persona.id %}" class="btn-action btn-penalize">Penalizar</a>
-                    {% else %}
-                        <span class="text-muted">Penalizado</span>
-                    {% endif %}
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-   
-    
+        <h2>Lista de Personas</h2>
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover">
+                <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Apellido Paterno</th>
+                        <th>Apellido Materno</th>
+                        <th>Correo</th>
+                        <th>Escuela</th>
+                        <th>Código</th>
+                        <th>Rol</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for persona in personas %}
+                    <tr>
+                        <td>{{ persona.nombre }}</td>
+                        <td>{{ persona.apellido_paterno }}</td>
+                        <td>{{ persona.apellido_materno }}</td>
+                        <td>{{ persona.correo }}</td>
+                        <td>{{ persona.escuela }}</td>
+                        <td>{{ persona.codigo }}</td>
+                        <td>{{ persona.rol }}</td>
+                        <td>
+                            <a href="{% url 'admin:editar_persona' persona.id %}" class="btn btn-edit">Editar</a>
+                            <a href="{% url 'admin:eliminar_persona' persona.id %}" class="btn btn-delete" onclick="return confirm('¿Estás seguro de que deseas eliminar a {{ persona.nombre }}?');">Eliminar</a>
+                            {% if not persona.penalizado %}
+                                <a href="{% url 'admin:penalizar_usuario' persona.id %}" class="btn btn-penalize">Penalizar</a>
+                            {% else %}
+                                <span class="badge bg-warning text-dark">Penalizado</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="mt-4 d-flex justify-content-between">
+            <a href="javascript:history.back()" class="btn btn-back">Volver Atrás</a>
+            <a href="{% url 'admin:inicio_admin' %}" class="btn btn-primary">Ir a Inicio Admin</a>
+        </div>
+    </div>
 </body>
 </html>
+
 

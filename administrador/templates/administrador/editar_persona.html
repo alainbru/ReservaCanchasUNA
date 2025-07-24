@@ -6,17 +6,63 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Editar Persona</title>
+    <link rel="stylesheet" href="https://bootswatch.com/5/solar/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #ffffff; /* Fondo blanco puro */
+        }
+        .form-container {
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 30px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #2c3e50; /* Color oscuro para los títulos */
+        }
+        /* Asegurar que los botones primarios sean azules */
+        .btn-primary {
+            background-color: #268bd2; /* Color azul de Solar */
+            border-color: #268bd2;
+        }
+        .btn-primary:hover {
+            background-color: #217dbb; /* Tono más oscuro al pasar el ratón */
+            border-color: #217dbb;
+        }
+        .btn-back {
+            background-color: #6c757d; /* Gris */
+            border-color: #6c757d;
+            color: white;
+        }
+        .btn-back:hover {
+            background-color: #5a6268;
+            border-color: #5a6268;
+        }
+    </style>
 </head>
 <body>
-    <div class="form-container">
-        <h1>Editar Persona: {{ persona.nombre }} {{ persona.apellido_paterno }}</h1>
-        <form method="post">
-            {% csrf_token %}
-            {{ formulario|crispy }}
-            <button type="submit" class="btn-primary">Guardar Cambios</button>
-            <a href="{% url 'admin:lista_usuarios' %}" class="btn-primary">Cancelar</a>
-        </form>
+    <div class="container mt-4">
+        <div class="text-center mb-4">
+            <img src="https://campus.unap.edu.pe/images/themes/unap/logo.png" alt="Logo Universidad Nacional del Altiplano Puno" class="img-fluid" style="max-height: 100px;">
+        </div>
+        <div class="form-container">
+            <h1>Editar Persona: {{ persona.nombre }} {{ persona.apellido_paterno }}</h1>
+            <form method="post">
+                {% csrf_token %}
+                {{ formulario|crispy }}
+                <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+                <a href="{% url 'admin:lista_usuarios' %}" class="btn btn-secondary">Cancelar</a>
+            </form>
+            <div class="mt-4 d-flex justify-content-between">
+                <a href="javascript:history.back()" class="btn btn-back">Volver Atrás</a>
+                <a href="{% url 'admin:inicio_admin' %}" class="btn btn-primary">Ir a Inicio Admin</a>
+            </div>
+        </div>
     </div>
 </body>
 </html>
+
+
 
