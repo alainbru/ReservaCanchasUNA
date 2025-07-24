@@ -12,7 +12,7 @@ def reservas_es(request):
     persona = Persona.objects.filter(correo=correo).first()
 
     # Verifica si ya reservó para ese deporte
-    ya_reservo = Reserva.objects.filter(deporte=deporte, persona=persona).exists()
+    ya_reservo = Reserva.objects.filter(deporte=deporte, persona=persona, disponible=False).exists()
 
     if request.method == 'POST' and not ya_reservo:
         reserva_id = request.POST.get('id_reserva')

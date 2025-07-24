@@ -31,7 +31,7 @@ class Reserva(models.Model):
     hora = models.CharField(max_length=20)
     cancha = models.CharField(max_length=20, blank=True, null=True)
     deporte = models.CharField(max_length=20, default='voley')
-    disponible = models.BooleanField(default=True)
+    disponible = models.BooleanField(default=None)
     persona = models.ForeignKey('Persona', null=True, blank=True, on_delete=models.SET_NULL)  # Nueva relación
 
     # NUEVO CAMPO: Para saber quién reservó la cancha
