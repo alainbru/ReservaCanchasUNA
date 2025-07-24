@@ -46,62 +46,53 @@ class Formulario_Persona(forms.Form):
         ('turismo', 'Turismo'),
         # Puedes añadir más carreras aquí
     ]
-    nombre = forms.CharField(max_length=100, label="Nombre")
-    apellido_paterno = forms.CharField(max_length=100, label="Apellido Paterno")
-    apellido_materno = forms.CharField(max_length=100, label="Apellido Materno")
+
+    nombre = forms.CharField(
+        max_length=100,
+        label="Nombre",
+        widget=forms.TextInput(attrs={'class': 'form-control'})
+    )
+    apellido_paterno = forms.CharField(
+        max_length=100,
+        label="Apellido Paterno",
+        widget=forms.TextInput(attrs={'class': 'form-control'})
+    )
+    apellido_materno = forms.CharField(
+        max_length=100,
+        label="Apellido Materno",
+        widget=forms.TextInput(attrs={'class': 'form-control'})
+    )
     correo = forms.EmailField(
         label="Correo Institucional",
-        help_text="Debe ser un correo @est.unap.edu.pe"
+        help_text="Debe ser un correo @est.unap.edu.pe",
+        widget=forms.EmailInput(attrs={'class': 'form-control'})
     )
-    # Modificación para permitir la edición sin cambiar el correo si no es necesario
-    def clean_correo(self):
-        correo = self.cleaned_data['correo']
-        
-        # Verificamos si estamos editando o creando
-        if self.instance is not None:
-            # Si estamos editando, verificamos si el correo ha cambiado
-            if self.instance.correo == correo:
-                return correo
-        
-        # Validación para correos institucionales
-        if not correo.endswith('@est.unap.edu.pe'):
-            raise ValidationError("Solo se permiten correos institucionales (@est.unap.edu.pe).")
-        
-        # Verificamos si el correo ya existe en la base de datos
-        if Persona.objects.filter(correo=correo).exists():
-            raise ValidationError("Este correo ya está registrado. Por favor, usa otro.")
-        
-        return correo
-
-    escuela = forms.ChoiceField(choices=CARRERAS, label="Escuela Profesional")
+    escuela = forms.ChoiceField(
+        choices=CARRERAS,
+        label="Escuela Profesional",
+        widget=forms.Select(attrs={'class': 'form-select'})
+    )
     codigo = forms.IntegerField(
         required=True,
         label="Código",
         validators=[
-            MinValueValidator(100000, message="El código debe tener 6 dígitos."),
-            MaxValueValidator(999999, message="El código debe tener 6 dígitos.")
-        ]
+            MinValueValidator(100000),
+            MaxValueValidator(999999)
+        ],
+        widget=forms.NumberInput(attrs={'class': 'form-control'})
     )
-    # Modificación para permitir la edición sin cambiar el código si no es necesario
-    def clean_codigo(self):
-        codigo = self.cleaned_data['codigo']
-        
-        # Verificamos si estamos editando o creando
-        if self.instance is not None:
-            # Si estamos editando, verificamos si el código ha cambiado
-            if self.instance.codigo == codigo:
-                return codigo
-        
-        # Validación para verificar si el código ya existe en la base de datos
-        if Persona.objects.filter(codigo=codigo).exists():
-            raise ValidationError("Este código ya está registrado. Por favor, usa uno diferente.")
-        
-        return codigo
+    contrasena = forms.CharField(
+        max_length=100,
+        required=False,
+        label="Contraseña",
+        widget=forms.PasswordInput(attrs={'class': 'form-control'})
+    )
+    rol = forms.ChoiceField(
+        choices=ROLES,
+        label="Rol",
+        widget=forms.Select(attrs={'class': 'form-select'})
+    )
 
-    contrasena = forms.CharField(max_length=100, widget=forms.PasswordInput, required=False, label="Contraseña")
-    rol = forms.ChoiceField(choices=ROLES, label="Rol")
-
-    # Constructor para inicializar el formulario con una instancia de Persona
     def __init__(self, *args, **kwargs):
         self.instance = kwargs.pop('instance', None)
         super().__init__(*args, **kwargs)
@@ -113,7 +104,24 @@ class Formulario_Persona(forms.Form):
             self.fields['escuela'].initial = self.instance.escuela
             self.fields['codigo'].initial = self.instance.codigo
             self.fields['rol'].initial = self.instance.rol
-            # No inicializamos la contraseña por seguridad
+
+    def clean_correo(self):
+        correo = self.cleaned_data['correo']
+        if self.instance and self.instance.correo == correo:
+            return correo
+        if not correo.endswith('@est.unap.edu.pe'):
+            raise ValidationError("Solo se permiten correos institucionales (@est.unap.edu.pe).")
+        if Persona.objects.filter(correo=correo).exists():
+            raise ValidationError("Este correo ya está registrado.")
+        return correo
+
+    def clean_codigo(self):
+        codigo = self.cleaned_data['codigo']
+        if self.instance and self.instance.codigo == codigo:
+            return codigo
+        if Persona.objects.filter(codigo=codigo).exists():
+            raise ValidationError("Este código ya está registrado.")
+        return codigo
 
 class Formulario_Login(forms.Form):
     codigo = forms.IntegerField(
