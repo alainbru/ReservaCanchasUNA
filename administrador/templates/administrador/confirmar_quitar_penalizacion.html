@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confirmar Quitar Penalización</title>
+</head>
+<body>
+    <div class="confirmation-box">
+        <h2>Confirmar Quitar Penalización</h2>
+        <p>¿Estás seguro de que deseas quitar la penalización a <strong>{{ persona.nombre }} {{ persona.apellido_paterno }}</strong> (Código: {{ persona.codigo }})?</p>
+        <form method="post">
+            {% csrf_token %}
+            <button type="submit" class="btn-confirm">Sí, Quitar Penalización</button>
+            <a href="{% url 'admin:gestionar_penalizaciones' %}" class="btn-cancel">Cancelar</a>
+        </form>
+    </div>
+</body>
+</html>
+

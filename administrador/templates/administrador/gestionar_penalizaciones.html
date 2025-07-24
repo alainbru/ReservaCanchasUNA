@@ -1,0 +1,58 @@
+{% load crispy_forms_tags %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Penalizaciones</title>
+</head>
+<body>
+
+    <h1>Gestión de Penalizaciones</h1>
+
+    {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+                <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    <h2>Usuarios Penalizados</h2>
+    {% if personas_penalizadas %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Código</th>
+                    <th>Correo</th>
+                    <th>Motivo</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for persona in personas_penalizadas %}
+                <tr>
+                    <td>{{ persona.nombre }} {{ persona.apellido_paterno }}</td>
+                    <td>{{ persona.codigo }}</td>
+                    <td>{{ persona.correo }}</td>
+                    <td>{{ persona.penalizacion_motivo|default:"N/A" }}</td>
+                    <td>
+                        <a href="{% url 'admin:quitar_penalizacion' persona.id %}" class="btn-action btn-unpenalize" onclick="return confirm('¿Estás seguro de que deseas quitar la penalización a {{ persona.nombre }}?');">Quitar Penalización</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No hay usuarios penalizados actualmente.</p>
+    {% endif %}
+
+    <h2>Penalizar un Usuario</h2>
+    <p>Selecciona un usuario de la lista de usuarios para penalizarlo.</p>
+    <a href="{% url 'admin:lista_usuarios' %}" class="btn-action btn-penalize">Ir a Lista de Usuarios para Penalizar</a>
+    
+</body>
+</html>
+

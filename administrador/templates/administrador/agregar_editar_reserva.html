@@ -1,0 +1,22 @@
+{% load crispy_forms_tags %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ accion }} Reserva</title>
+</head>
+<body>
+    <div class="form-container">
+        <h1>{{ accion }} Reserva</h1>
+        <form method="post">
+            {% csrf_token %}
+            {{ form|crispy }}
+            <button type="submit" class="btn-primary">Guardar</button>
+            <a href="{% url 'admin:gestionar_reservas' %}" class="btn-primary" style="background-color: #6c757d;">Cancelar</a>
+        </form>
+    </div>
+</body>
+</html>
+
