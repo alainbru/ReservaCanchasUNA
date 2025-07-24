@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 {% load crispy_forms_tags %}
 <!DOCTYPE html>
 <html lang="en">
@@ -10,35 +9,28 @@
     {% load static %}
     <style>
         /* Aplicamos la imagen de fondo al contenedor */
-   .container-fluid {
-    background-image: url("{% static 'images/coor.png' %}"); /* Cambia esta URL por la ruta de tu imagen */
-    background-size: contain; /* Asegura que la imagen se ajuste al contenedor sin recortarse */
-    background-repeat: no-repeat; /* Evita que la imagen se repita si es más pequeña que el contenedor */
-    background-position: center; /* Centra la imagen */
-    height: 100vh; /* La imagen cubre toda la altura de la pantalla */
-    color: white; /* El texto será blanco para hacerlo visible sobre el fondo */
-}
-
-
-
-        h1 {
-    font-size: 4.5rem;
-    margin-bottom: 10px;
-    width: 100%; /* Hace que el título ocupe todo el ancho disponible */
-}
+        .container-fluid {
+            background-image: url("{% static 'images/coor.png' %}"); /* Cambia esta URL por la ruta de tu imagen */
+            background-size: contain; /* Asegura que la imagen se ajuste al contenedor sin recortarse */
+            background-repeat: no-repeat; /* Evita que la imagen se repita si es más pequeña que el contenedor */
+            background-position: center; /* Centra la imagen */
+            height: 100vh; /* La imagen cubre toda la altura de la pantalla */
+            color: white; /* El texto será blanco para hacerlo visible sobre el fondo */
+        }
+         h1 {
+            font-size: 4.5rem;
+            margin-bottom: 10px;
+            width: 100%; /* Hace que el título ocupe todo el ancho disponible */
+        }
         p {
             font-size: 1.2rem;
             margin-bottom: px;
             width: 80%; 
         }
-        ul {
-             margin-bottom: 10px;
+        .text-align {
+            text-align: left;
+            margin-left: 28%; /* Mueve todo el contenido hacia la derecha 5% */
         }
-
-.text-align {
-    text-align: left;
-    margin-left: 28%; /* Mueve todo el contenido hacia la derecha 5% */
-}
 
     </style>
 
@@ -61,23 +53,3 @@
 
 </body>
 </html>
-=======
-    <!DOCTYPE html>
-    <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Document</title>
-    </head>
-    <body>
-
-        <h1>Bienvenido Pagina del COORDINADOR</h1>
-
-        <a href="{% url 'coordinador:coordinador_reservas' %}" 
-        class="btn btn-primary">Ver Reservas
-        </a>
-        
-    </body>
-    </html>
-    
->>>>>>> e1fe4aa (css de administrador terminado)
