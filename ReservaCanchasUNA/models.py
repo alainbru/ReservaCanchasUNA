@@ -32,7 +32,8 @@ class Reserva(models.Model):
     cancha = models.CharField(max_length=20, blank=True, null=True)
     deporte = models.CharField(max_length=20, default='voley')
     disponible = models.BooleanField(default=True)
-<<<<<<< HEAD
+    persona = models.ForeignKey('Persona', null=True, blank=True, on_delete=models.SET_NULL)  # Nueva relación
+
     # NUEVO CAMPO: Para saber quién reservó la cancha
     reservado_por = models.ForeignKey(
         'Persona',
@@ -45,6 +46,4 @@ class Reserva(models.Model):
     fecha_reserva = models.DateTimeField(auto_now_add=True, null=True, blank=True)
     def __str__(self):
         return f"{self.deporte} - {self.dia} {self.hora} ({self.cancha if self.cancha else 'Cancha Única'}) - {'Disponible' if self.disponible else 'Reservado'}"
-=======
     cancelacion_confirmada = models.BooleanField(default=False)
->>>>>>> rama_fabiicito
