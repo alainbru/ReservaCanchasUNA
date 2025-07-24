@@ -18,6 +18,9 @@
     </form>
 
     <br>
+    {% if ya_reservo %}
+    <p style="color: red;">Ya hizo reserva para este deporte.</p>
+    {% endif %}
 
     <table border="1">
         <tr>
@@ -88,7 +91,7 @@
         {% endfor %}
     </table>
     {% if ya_reservo %}
-    <form method="get" action="{% url 'inicio_estudiante' %}">
+    <form method="get" action="{% url 'estudiante:inicio_estudiante' %}">
         <button type="submit">Confirmar</button>
     </form>
 {% endif %}

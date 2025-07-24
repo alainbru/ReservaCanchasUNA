@@ -1,5 +1,5 @@
 from django.shortcuts import redirect, render
-from ReservaCanchasUNA.models import Reserva
+from ReservaCanchasUNA.models import Reserva, Persona
 
 # Create your views here.
 def inicio_es(request):
@@ -7,18 +7,19 @@ def inicio_es(request):
 
 
 def reservas_es(request):
-    deporte = request.GET.get('deporte', 'futbol')  # Default is fútbol
+    deporte = request.GET.get('deporte', 'futbol')
+    correo = request.session.get('correo')  # Debes guardar el correo en sesión al iniciar sesión
+    persona = Persona.objects.filter(correo=correo).first()
 
-    # Verifica si ya reservó en la sesión
-    ya_reservo = request.session.get(f'reservo_{deporte}', False)
+    # Verifica si ya reservó para ese deporte
+    ya_reservo = Reserva.objects.filter(deporte=deporte, persona=persona).exists()
 
     if request.method == 'POST' and not ya_reservo:
         reserva_id = request.POST.get('id_reserva')
         reserva = Reserva.objects.get(id=reserva_id)
         reserva.disponible = False
+        reserva.persona = persona
         reserva.save()
-        # Marca que ya reservó en la sesión
-        request.session[f'reservo_{deporte}'] = True
         return redirect(f"{request.path}?deporte={deporte}")
 
     dias = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes']
@@ -35,7 +36,7 @@ def reservas_es(request):
         canchas = []
         reservas = Reserva.objects.filter(deporte=deporte, dia__in=dias, hora__in=horas)
 
-    return render(request, 'ReservaCanchasUNA/reservas.html', {
+    return render(request, 'estudiante/reservas_es.html', {
         'dias': dias,
         'horas': horas,
         'canchas': canchas,
