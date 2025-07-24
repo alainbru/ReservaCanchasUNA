@@ -6,53 +6,141 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gestión de Penalizaciones</title>
+    <link rel="stylesheet" href="https://bootswatch.com/5/solar/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #ffffff; /* Fondo blanco puro */
+        }
+        h1, h2 {
+            color: #2c3e50; /* Color oscuro para los títulos */
+        }
+        /* Asegurar que los botones primarios sean azules */
+        .btn-primary {
+            background-color: #268bd2; /* Color azul de Solar */
+            border-color: #268bd2;
+        }
+        .btn-primary:hover {
+            background-color: #217dbb; /* Tono más oscuro al pasar el ratón */
+            border-color: #217dbb;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            border-radius: 8px; /* Bordes redondeados para la tabla */
+            overflow: hidden; /* Asegura que los bordes redondeados se apliquen correctamente */
+        }
+        th, td {
+            border: 1px solid #e0e0e0; /* Borde más suave para las celdas */
+            padding: 12px; /* Mayor padding para mejor legibilidad */
+            text-align: left;
+        }
+        th {
+            background-color: #f0f8ff; /* Un azul muy claro para las cabeceras */
+            color: #333; /* Color de texto más oscuro para contraste */
+            font-weight: bold;
+            text-transform: uppercase; /* Texto en mayúsculas para las cabeceras */
+        }
+        tbody tr:nth-child(even) {
+            background-color: #f9f9f9; /* Un gris muy claro para filas pares */
+        }
+        tbody tr:hover {
+            background-color: #eef; /* Resaltar fila al pasar el ratón */
+        }
+        .messages {
+            list-style: none;
+            padding: 0;
+            margin-top: 20px;
+        }
+        .messages li {
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+        }
+        .messages .success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .btn-unpenalize {
+            background-color: #28a745; /* Verde de éxito */
+            color: white;
+            border: 1px solid #28a745;
+        }
+        .btn-unpenalize:hover {
+            background-color: #218838;
+            border-color: #218838;
+        }
+        .btn-back {
+            background-color: #6c757d; /* Gris */
+            border-color: #6c757d;
+            color: white;
+        }
+        .btn-back:hover {
+            background-color: #5a6268;
+            border-color: #5a6268;
+        }
+    </style>
 </head>
 <body>
+    <div class="container mt-4">
+        <div class="text-center mb-4">
+            <img src="https://campus.unap.edu.pe/images/themes/unap/logo.png" alt="Logo Universidad Nacional del Altiplano Puno" class="img-fluid" style="max-height: 100px;">
+        </div>
+        <h1>Gestión de Penalizaciones</h1>
 
-    <h1>Gestión de Penalizaciones</h1>
-
-    {% if messages %}
-        <ul class="messages">
-            {% for message in messages %}
-                <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-            {% endfor %}
-        </ul>
-    {% endif %}
-
-    <h2>Usuarios Penalizados</h2>
-    {% if personas_penalizadas %}
-        <table>
-            <thead>
-                <tr>
-                    <th>Nombre</th>
-                    <th>Código</th>
-                    <th>Correo</th>
-                    <th>Motivo</th>
-                    <th>Acciones</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for persona in personas_penalizadas %}
-                <tr>
-                    <td>{{ persona.nombre }} {{ persona.apellido_paterno }}</td>
-                    <td>{{ persona.codigo }}</td>
-                    <td>{{ persona.correo }}</td>
-                    <td>{{ persona.penalizacion_motivo|default:"N/A" }}</td>
-                    <td>
-                        <a href="{% url 'admin:quitar_penalizacion' persona.id %}" class="btn-action btn-unpenalize" onclick="return confirm('¿Estás seguro de que deseas quitar la penalización a {{ persona.nombre }}?');">Quitar Penalización</a>
-                    </td>
-                </tr>
+        {% if messages %}
+            <ul class="messages">
+                {% for message in messages %}
+                    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
                 {% endfor %}
-            </tbody>
-        </table>
-    {% else %}
-        <p>No hay usuarios penalizados actualmente.</p>
-    {% endif %}
+            </ul>
+        {% endif %}
 
-    <h2>Penalizar un Usuario</h2>
-    <p>Selecciona un usuario de la lista de usuarios para penalizarlo.</p>
-    <a href="{% url 'admin:lista_usuarios' %}" class="btn-action btn-penalize">Ir a Lista de Usuarios para Penalizar</a>
-    
+        <h2>Usuarios Penalizados</h2>
+        {% if personas_penalizadas %}
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Nombre</th>
+                            <th>Código</th>
+                            <th>Correo</th>
+                            <th>Motivo</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for persona in personas_penalizadas %}
+                        <tr>
+                            <td>{{ persona.nombre }} {{ persona.apellido_paterno }}</td>
+                            <td>{{ persona.codigo }}</td>
+                            <td>{{ persona.correo }}</td>
+                            <td>{{ persona.penalizacion_motivo|default:"N/A" }}</td>
+                            <td>
+                                <a href="{% url 'admin:quitar_penalizacion' persona.id %}" class="btn btn-unpenalize" onclick="return confirm('¿Estás seguro de que deseas quitar la penalización a {{ persona.nombre }}?');">Quitar Penalización</a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <p>No hay usuarios penalizados actualmente.</p>
+        {% endif %}
+
+        <h2>Penalizar un Usuario</h2>
+        <p>Selecciona un usuario de la lista de usuarios para penalizarlo.</p>
+        <a href="{% url 'admin:lista_usuarios' %}" class="btn btn-primary">Ir a Lista de Usuarios para Penalizar</a>
+
+        <div class="mt-4 d-flex justify-content-between">
+            <a href="javascript:history.back()" class="btn btn-back">Volver Atrás</a>
+            <a href="{% url 'admin:inicio_admin' %}" class="btn btn-primary">Ir a Inicio Admin</a>
+        </div>
+    </div>
 </body>
 </html>
+
 

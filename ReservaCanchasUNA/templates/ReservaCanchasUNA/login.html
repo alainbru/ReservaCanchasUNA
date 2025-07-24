@@ -5,21 +5,36 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Iniciar secion</title>
+    <link rel="stylesheet" href="https://bootswatch.com/5/solar/bootstrap.min.css">
+    <title>Iniciar Sesión</title>
+    <style>
+        /* Estilo personalizado para el fondo blanco */
+        body {
+            background-color: #ffffff; /* Blanco puro */
+        }
+    </style>
 </head>
-<body>
+<body> {# Eliminamos la clase bg-light del body para aplicar nuestro estilo personalizado #}
 
-    <h1>Bienvenidos a Canchas UNA PUNO</h1>
-    <h2>_____Iniciar sesion_____</h2>
-
-      <div>
-        <form action="{% url 'login_view' %}" method="post">
-            {% csrf_token %}
-            {{ formulario|crispy }}
-            <button class="btn btn-primary">Ingresar</button>
-        </form>
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-6 col-lg-4">
+                <div class="card shadow-lg p-4 border-0">
+                    <div class="card-body text-center">
+                        <img src="https://campus.unap.edu.pe/images/themes/unap/logo.png" alt="Logo Universidad Nacional del Altiplano Puno" class="img-fluid mb-4" style="max-height: 100px;">
+                        <h1 class="card-title mb-4 text-dark">Bienvenidos a Canchas UNA PUNO</h1> {# Cambiado a text-dark para visibilidad en fondo blanco #}
+                        <form action="{% url 'login_view' %}" method="post">
+                            {% csrf_token %}
+                            {{ formulario|crispy }}
+                            <div class="d-grid gap-2 mt-4">
+                                <button class="btn btn-primary btn-lg">Ingresar</button> {# btn-primary de Bootstrap Solar es azul #}
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-    </form>
     
 </body>
 </html>

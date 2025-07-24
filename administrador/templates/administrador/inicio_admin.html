@@ -5,22 +5,41 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Inicio Administrador</title>
+    <link rel="stylesheet" href="https://bootswatch.com/5/solar/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #ffffff; /* Fondo blanco puro */
+        }
+        h1 {
+            color: #2c3e50; /* Color oscuro para los títulos */
+        }
+        /* Asegurar que los botones primarios sean azules */
+        .btn-primary {
+            background-color: #268bd2; /* Color azul de Solar */
+            border-color: #268bd2;
+        }
+        .btn-primary:hover {
+            background-color: #217dbb; /* Tono más oscuro al pasar el ratón */
+            border-color: #217dbb;
+        }
+    </style>
 </head>
 <body>
-
-    <h1>Bienvenido Pagina del ADMINISTRADOR</h1>
-    
-    <div>
-        <a href="{% url 'admin:lista_usuarios' %}" class="btn-link">Gestionar Usuarios</a>
+    <div class="container mt-4">
+        <div class="text-center mb-4">
+            <img src="https://campus.unap.edu.pe/images/themes/unap/logo.png" alt="Logo Universidad Nacional del Altiplano Puno" class="img-fluid" style="max-height: 100px;">
+        </div>
+        <div class="text-center">
+            <h1 class="mb-4">Bienvenido Página del ADMINISTRADOR</h1>
+            
+            <div class="d-grid gap-3 col-md-6 mx-auto">
+                <a href="{% url 'admin:lista_usuarios' %}" class="btn btn-primary btn-lg">Gestionar Usuarios</a>
+                <a href="{% url 'admin:gestionar_reservas' %}" class="btn btn-primary btn-lg">Gestionar Reservas</a>
+                <a href="{% url 'admin:gestionar_penalizaciones' %}" class="btn btn-primary btn-lg">Gestionar Penalizaciones</a>
+            </div>
+        </div>
     </div>
-    <div>
-        <a href="{% url 'admin:gestionar_reservas' %}" class="btn-link">Gestionar Reservas</a>
-    </div>
-    <div>
-        <a href="{% url 'admin:gestionar_penalizaciones' %}" class="btn-link">Gestionar Penalizaciones</a>
-    </div>
-    
 </body>
 </html>
 

@@ -47,8 +47,9 @@ def crear_persona(request):
                 contrasena=contrasenas,
                 rol=rols
             )
-            return HttpResponse(f"Hola {nombres} {apellidop}, fuiste registrado correctamente." )     
-
+            # Redirige al usuario a la página de login después de un registro exitoso
+            messages.success(request, '¡Registro exitoso! Ahora puedes iniciar sesión.')
+            return redirect('login_view') # Asumiendo que 'login_view' es el nombre de tu URL de login
 
     else:
         formulario = forms.Formulario_Persona()
@@ -70,6 +71,8 @@ def login_view(request):
             try:
                 persona = Persona.objects.get(codigo=codigo, contrasena=contrasena)
                 request.session['persona_id'] = persona.id
+                # Guardar el correo en la sesión para el estudiante
+                request.session['correo'] = persona.correo 
                 
                 if persona.rol == 'admin':
                     return redirect('admin:inicio_admin')
@@ -103,16 +106,19 @@ def vista_reservas(request):
         if accion == 'confirmar_cancelacion' and not cancelacion_permanente:
             # Guardar el estado permanente en la BD
             Reserva.objects.all().update(cancelacion_confirmada=True)
+            messages.success(request, 'Todas las cancelaciones han sido confirmadas permanentemente.')
         elif accion == 'cancelar' and not cancelacion_permanente:
             reserva_id = request.POST.get('id_reserva')
-            reserva = Reserva.objects.get(id=reserva_id)
+            reserva = get_object_or_404(Reserva, id=reserva_id)
             reserva.disponible = False
             reserva.save()
+            messages.info(request, f'Reserva {reserva.dia} {reserva.hora} marcada como no disponible.')
         elif accion == 'confirmar' and not cancelacion_permanente:
             reserva_id = request.POST.get('id_reserva')
-            reserva = Reserva.objects.get(id=reserva_id)
+            reserva = get_object_or_404(Reserva, id=reserva_id)
             reserva.disponible = True
             reserva.save()
+            messages.success(request, f'Reserva {reserva.dia} {reserva.hora} marcada como disponible.')
         return redirect(f"{request.path}?deporte={deporte}")
 
     dias = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes']
@@ -121,20 +127,24 @@ def vista_reservas(request):
         "11:00-12:00", "12:00-13:00", "13:00-14:00", "14:00-15:00",
         "15:00-16:00", "16:00-17:00", "17:00-18:00", "18:00-19:00", "19:00-20:00"
     ]
+    
+    # Aseguramos que 'reservas_queryset' siempre se defina
     if deporte != 'futbol':
         canchas = ['cancha 1', 'cancha 2']
-        # Usamos .all() y luego filtramos en la plantilla para simplificar la vista
         reservas_queryset = Reserva.objects.filter(deporte=deporte).select_related('reservado_por')
     else:
         canchas = []
-        reservas = Reserva.objects.filter(deporte=deporte, dia__in=dias, hora__in=horas)
+        # CAMBIO AQUÍ: Renombramos 'reservas' a 'reservas_queryset'
+        reservas_queryset = Reserva.objects.filter(deporte=deporte, dia__in=dias, hora__in=horas)
 
     return render(request, 'ReservaCanchasUNA/reservas.html', {
         'dias': dias,
         'horas': horas,
         'canchas': canchas,
-        'reservas_queryset': reservas_queryset, # Pasamos el queryset completo
+        'reservas': reservas_queryset, # Usamos 'reservas' para que coincida con la plantilla 'reservas.html'
+                                      # que itera sobre 'reservas'
         'deporte': deporte,
         'cancelacion_confirmada': cancelacion_permanente,
         'rol': rol,
     })
+
