@@ -6,40 +6,160 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CanchasUNAP</title>
+    <link rel="stylesheet" href="https://bootswatch.com/5/solar/bootstrap.min.css">
+
+    <!--------------para la imagen de fondo---------------->
+    {% load static %}
+    <style>
+        /* Aplicamos la imagen de fondo al contenedor */
+        .container-fluid {
+            background-image: url("{% static 'images/imagenFondo.png' %}");/* Cambia esta URL por la ruta de tu imagen */
+            background-size: cover; /* La imagen cubre todo el área */
+            background-position: center; /* Centra la imagen */
+             height: 91vh; /* Altura del contenedor igual a la altura de la pantalla */
+            color: white; /* El texto será blanco para hacerlo visible sobre el fondo oscuro */
+        }
+
+        h1 {
+            font-size: 5.5rem;
+            margin-bottom: 15px;
+            width: 50%; 
+        }
+        p {
+            font-size: 1.2rem;
+            margin-bottom: 25px;
+            width: 40%; 
+        }
+        ul {
+             margin-bottom: 10px;
+        }
+
+
+    </style>
 </head>
 <body>
+<!--------------------------------------para la barra superior (barra de naevgacion )---------------------->
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <a class="navbar-brand" href="#">Navbar</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+    <div class="navbar-nav">
+      <a class="nav-item nav-link active" href="#">Home <span class="sr-only">(current)</span></a>
+      <a class="nav-item nav-link" href="#">Features</a>
+      <a class="nav-item nav-link" href="#">Pricing</a>
+      <a class="nav-item nav-link disabled" href="#">Disabled</a>
+    </div>
+  </div>
+</nav>
 
-    <h1>Bienvenidos a Canchas UNA PUNO</h1>
-    <div>
-      <p>
-        CanchasUNA Puno es un sistema desarrollado para facilitar la reserva de canchas deportivas
-         dentro de la Universidad Nacional del Altiplano. Nuestro objetivo es promover 
-         la organización, el acceso equitativo y el uso adecuado de los espacios deportivos 
-         para todos los estudiantes, docentes y personal administrativo.
-    </p>
-
-    <p>Con esta plataforma, podrás:</p>
-
-        <ul>
-            <li>Consultar la disponibilidad de canchas en tiempo real.</li>
-            <li>Realizar reservas de manera rápida y sencilla.</li>
-            <li>Visualizar tus reservas activas y pasadas.</li>
-            <li>Contribuir al buen uso de los espacios deportivos universitarios.</li>
-        </ul>
+<!-------------------------------------- imagen principal ---------------------->
+  <div class="container-fluid border border-primary p-4">
+        <div class="text-align">
+            <h1>Bienvenidos a Canchas UNA PUNO</h1>
+            
+            <p>
+                CanchasUNA Puno es un sistema desarrollado para facilitar la reserva de canchas deportivas
+                dentro de la Universidad Nacional del Altiplano. Nuestro objetivo es promover 
+                la organización, el acceso equitativo y el uso adecuado de los espacios deportivos 
+                para todos los estudiantes, docentes y personal administrativo.
+            </p>
+            <p>Con esta plataforma, podrás:</p>
+             <ul>
+                <li>Consultar la disponibilidad de canchas en tiempo real.</li>
+                <li>Realizar reservas de manera rápida y sencilla.</li>
+                <li>Visualizar tus reservas activas y pasadas.</li>
+                <li>Contribuir al buen uso de los espacios deportivos universitarios.</li>
+            </ul>
+         
+            <div class="d-flex gap-3">
+            <form action="{% url 'login_view' %}" method="post">
+                {% csrf_token %}
+                {{ formulario|crispy }}
+                <button class="btn btn-secondary btn-lg">INICIAR SESION</button>
+            </form>
+            
+            <form action="{% url 'crear_persona' %}" method="get">
+                <button class="btn btn-secondary btn-lg">REGISTRARSE</button>
+            </form>
+        </div>
+        </div>
     </div>
 
-      <div>
-        <form action="{% url 'login_view' %}" method="post">
-            {% csrf_token %}
-            {{ formulario|crispy }}
-            <button class="btn btn-primary">INICIAR SESION</button>
-        </form>
+<!-------------------------------------- para las  canchas ---------------------->
+<br>
+<h2>Canchas disponibles</h2>
+<br>
+<div class="card-group">
+<!--Basquet-->   
+  <div class="card">
+    <img class="card-img-top" src="{% static 'images/basquet.jpeg' %}" alt="Card image cap" style="height: 400px; object-fit: cover;">
+    <div class="card-body">
+      <h3 class="card-title">Basquet </h3>
     </div>
+  </div>    
+<!--voley-->   
+  <div class="card">
+    <img class="card-img-top" src="{% static 'images/voley.jpeg' %}" alt="Card image cap"style="height: 400px; object-fit: cover;">
+    <div class="card-body">
+      <h3 class="card-title">voley </h3>
+    </div>
+  </div>
+<!--futsal-->   
+  <div class="card">
+    <img class="card-img-top" src="{% static 'images/futsal.jpeg' %}" alt="Card image cap"style="height: 400px; object-fit: cover;">
+    <div class="card-body">
+      <h3 class="card-title">futsal </h3>
+    </div>
+  </div>
+<!--futbol-->   
+  <div class="card">
+    <img class="card-img-top" src="{% static 'images/futbol.jpeg' %}" alt="Card image cap"style="height: 400px; object-fit: cover;">
+    <div class="card-body">
+      <h3 class="card-title">futbol </h3>
+    </div>
+  </div>
+  </div>
+</div>
 
-    <form action="{% url 'crear_persona' %}" method="get">
-        <button type="submit">REGISTRARSE</button>
+<br>
 
-    </form>
-    
+
+<!-------------------------------------- requisitos y penalisaciones ---------------------->
+<div class="row">
+  <div class="col-sm-6">
+    <div class="card">
+      <div class="card-body">
+        <h2 class="card-title">Requisitos</h2>
+            <ul class="card-text">
+                <li><strong> Ser miembro de la Universidad:</strong> Solo para estudiantes, docentes o personal UNA Puno con correo institucional.</li>
+                <li><strong> Registro en la plataforma:</strong> Debes registrarte para acceder al calendario y reservar canchas.</li>
+                <li><strong> Confirmar asistencia:</strong> Confirma al menos 30 minutos antes o tu reserva se libera.</li>
+                <li><strong> Participantes responsables:</strong> Incluye al menos dos responsables por cada reserva.</li>
+                <li><strong> Respetar bloqueos y eventos:</strong> Incluye al menos dos responsables por cada reserva.</li>
+            </ul>
+        <a href="#" class="btn btn-primary"> ------- </a>
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-6">
+    <div class="card">
+      <div class="card-body">
+        <h2 class="card-title">Penalización</h2>
+        <br>
+             <ul class="card-text">
+                <li><strong> Falta por inasistencia:</strong> No asistir sin avisar puede suspendirte temporalmente.</li>
+                <li><strong>No confirmar a tiempo:</strong> Si no confirmas, la reserva se cancela y afecta tu historial.</li>
+                <li><strong>Mal uso de las instalaciones:</strong> Daños o mal uso pueden suspenderte de inmediato.</li>
+                <li><strong> Sistema de reputación:</strong> Las faltas bajan tu puntaje y podrías perder el derecho a reservar.</li>
+            </ul>
+        <br>
+        <a href="#" class="btn btn-primary"> ------- </a>
+      </div>
+    </div>
+  </div>
+</div>
+
 </body>
 </html>

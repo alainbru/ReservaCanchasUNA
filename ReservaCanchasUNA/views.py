@@ -87,6 +87,7 @@ def login_view(request):
     
 #'''---------------------------------------para reservas---------------------------------------
 def vista_reservas(request):
+<<<<<<< HEAD
     deporte = request.GET.get('deporte', 'futbol')
     if request.method == 'POST':
         reserva_id = request.POST.get('id_reserva')
@@ -111,24 +112,65 @@ def vista_reservas(request):
             messages.error(request, 'Debes iniciar sesión para reservar.')
         return redirect(f"{request.path}?deporte={deporte}")
     # Lógica para mostrar el calendario (GET request)
+=======
+    persona_id = request.session.get('persona_id')
+    rol = None
+    if persona_id:
+        persona = Persona.objects.get(id=persona_id)
+        rol = persona.rol
+
+    deporte = request.GET.get('deporte', 'futbol')
+
+    # Verifica si el estado ya es permanente
+    cancelacion_permanente = Reserva.objects.filter(cancelacion_confirmada=True).exists()
+
+    if request.method == 'POST':
+        accion = request.POST.get('accion')
+        if accion == 'confirmar_cancelacion' and not cancelacion_permanente:
+            # Guardar el estado permanente en la BD
+            Reserva.objects.all().update(cancelacion_confirmada=True)
+        elif accion == 'cancelar' and not cancelacion_permanente:
+            reserva_id = request.POST.get('id_reserva')
+            reserva = Reserva.objects.get(id=reserva_id)
+            reserva.disponible = False
+            reserva.save()
+        elif accion == 'confirmar' and not cancelacion_permanente:
+            reserva_id = request.POST.get('id_reserva')
+            reserva = Reserva.objects.get(id=reserva_id)
+            reserva.disponible = True
+            reserva.save()
+        return redirect(f"{request.path}?deporte={deporte}")
+
+>>>>>>> rama_fabiicito
     dias = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes']
     horas = [
         "7:00-8:00", "8:00-9:00", "9:00-10:00", "10:00-11:00",
         "11:00-12:00", "12:00-13:00", "13:00-14:00", "14:00-15:00",
         "15:00-16:00", "16:00-17:00", "17:00-18:00", "18:00-19:00", "19:00-20:00"
     ]
+<<<<<<< HEAD
     # Obtener todas las reservas para el deporte seleccionado
+=======
+
+>>>>>>> rama_fabiicito
     if deporte != 'futbol':
         canchas = ['cancha 1', 'cancha 2']
         # Usamos .all() y luego filtramos en la plantilla para simplificar la vista
         reservas_queryset = Reserva.objects.filter(deporte=deporte).select_related('reservado_por')
     else:
         canchas = []
+<<<<<<< HEAD
         reservas_queryset = Reserva.objects.filter(deporte=deporte).select_related('reservado_por')
+=======
+        reservas = Reserva.objects.filter(deporte=deporte, dia__in=dias, hora__in=horas)
+
+>>>>>>> rama_fabiicito
     return render(request, 'ReservaCanchasUNA/reservas.html', {
         'dias': dias,
         'horas': horas,
         'canchas': canchas,
         'reservas_queryset': reservas_queryset, # Pasamos el queryset completo
         'deporte': deporte,
+        'cancelacion_confirmada': cancelacion_permanente,
+        'rol': rol,
     })
